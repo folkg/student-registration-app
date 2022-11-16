@@ -4,6 +4,9 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 
+//TODO: Do we want navbar?
+//TODO: Change the name of the document in the browser bar
+
 function App() {
   //TODO: store user login in browser session?
   const [token, setToken] = useState();
