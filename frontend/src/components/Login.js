@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "./Login.css";
 
 async function loginUser(credentials) {
-  //TODO: Modify to verify credentials with our server
+  // TODO: Modify to verify credentials with our server
+  // Send credentials to server and return the token from the response
   // const response = await fetch("http://localhost:8080/login", {
   //   method: "POST",
   //   headers: {
@@ -17,7 +18,9 @@ async function loginUser(credentials) {
 }
 
 export default function Login(props) {
+  // import the setToken function passed in with props
   const setToken = props.setToken;
+  // keep track of username and password state
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
@@ -38,7 +41,7 @@ export default function Login(props) {
           <p>Username</p>
           <input
             type="text"
-            value={username}
+            value={username || ""}
             onChange={(e) => setUserName(e.target.value)}
           />
         </label>
@@ -46,7 +49,7 @@ export default function Login(props) {
           <p>Password</p>
           <input
             type="password"
-            value={password}
+            value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>

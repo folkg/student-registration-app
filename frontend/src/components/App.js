@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
+import { useSessionStorageState } from "../hooks/useSessionStorageState";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 
@@ -8,9 +9,8 @@ import Dashboard from "./Dashboard";
 //TODO: Change the name of the document in the browser bar
 
 function App() {
-  //TODO: store user login in browser session?
-  const [token, setToken] = useState();
-  console.log(token);
+  // Create a token for the user and save in session storage. Default value is null.
+  const [token, setToken] = useSessionStorageState("token", null);
 
   if (!token) {
     return <Login setToken={setToken} />;
