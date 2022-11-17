@@ -15,7 +15,7 @@ public class DataStore implements IDataStore {
 
     private Statement getStatement() throws SQLException, ClassNotFoundException {
         Connection conn = DriverManager.getConnection("jdbc:mysql://MYSQL6013.site4now.net/db_a39532_ensf608",
-                "a39532_ensf608", "spkx9876");
+                "Ask for it", "ask for it");
         Statement stmt = conn.createStatement();
         return stmt;
     }
