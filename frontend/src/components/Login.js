@@ -33,6 +33,7 @@ export default function Login(props) {
       password,
     });
     setToken(token);
+    //TODO: Display success or error message
   }
 
   return (

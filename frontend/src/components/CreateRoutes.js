@@ -3,6 +3,7 @@ import { useSessionStorageState } from "../hooks/useSessionStorageState";
 import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
+import ViewCourses from "./ViewCourses";
 
 function CreateRoutes() {
   // Create a token for the user and save in session storage. Default value is null.
@@ -43,6 +44,15 @@ function CreateRoutes() {
         element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        exact
+        path="/viewcourses"
+        element={
+          <PrivateRoute>
+            <ViewCourses />
           </PrivateRoute>
         }
       />

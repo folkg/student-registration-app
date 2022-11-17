@@ -6,7 +6,12 @@ import "./App.css";
 
 function App() {
   const routes = CreateRoutes();
-  return routes;
+  return (
+    <div>
+      <h1>App</h1>
+      {routes}
+    </div>
+  );
 }
 
 export default App;
