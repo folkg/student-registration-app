@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./Signup.css";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Link,
+  TextField,
+  Box,
+  Typography,
+  Container,
+} from "@mui/material";
 
 async function registerUser(userDetails) {
   // TODO: Modify to verify credentials with our server
@@ -13,7 +21,7 @@ async function registerUser(userDetails) {
     body: JSON.stringify(userDetails),
   });
   const body = JSON.parse(response.body);
-  return body.status === "success" ? body.data : null;
+  return body.status === "success";
 }
 
 export default function Signup() {
@@ -22,61 +30,89 @@ export default function Signup() {
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  // use a state to keep track of whether or not there is an error with signup
+  const [signupError, setSignupError] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const response = await registerUser({
+    const result = await registerUser({
       firstName,
       lastName,
       email,
       password,
     });
-    //TODO: Display success or error message
+    // set signup error status
+    setSignupError(!result);
   }
 
   return (
-    <div className="signup-wrapper">
-      <h1>Please Provide Registration Details</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <p>First Name</p>
-          <input
-            type="text"
-            value={firstName || ""}
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          marginBottom: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Sign Up
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="First Name"
+            value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
-        </label>
-        <label>
-          <p>Last Name</p>
-          <input
-            type="text"
-            value={lastName || ""}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Last Name"
+            value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
-        </label>
-        <label>
-          <p>Email</p>
-          <input
-            type="text"
-            value={email || ""}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Email Address"
+            type="email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </label>
-        <label>
-          <p>Password</p>
-          <input
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Password"
             type="password"
-            value={password || ""}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </label>
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-        <div>
-          <Link to="/login">Log In</Link>
-        </div>
-      </form>
-    </div>
+          {signupError && (
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Registratin was unsuccessful. Please re-try.
+            </Alert>
+          )}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Sign Up
+          </Button>
+        </form>
+        <Link href="/login" underline="hover">
+          {"Or Log In"}
+        </Link>
+      </Box>
+    </Container>
   );
 }

@@ -18,7 +18,7 @@ function useSessionStorageState(key, defaultValue) {
   // update session storage anytime the 'value' changes
   useEffect(() => {
     window.sessionStorage.setItem(key, JSON.stringify(value));
-  }, [value]);
+  }, [value, key]);
 
   return [value, setValue];
 }
