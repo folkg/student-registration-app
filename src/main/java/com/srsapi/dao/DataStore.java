@@ -8,16 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.srsapi.model.*;
 
 @Component("dataStore")
 public class DataStore implements IDataStore {
+    @Autowired
+    private Environment env;
 
     private Statement getStatement() throws SQLException, ClassNotFoundException {
-        Connection conn = DriverManager.getConnection("jdbc:mysql://MYSQL6013.site4now.net/db_a39532_ensf608",
-                "a39532_ensf608", "spkx9876");
+        Connection conn = DriverManager.getConnection(env.getProperty("db-url"), env.getProperty("db-username"),
+                env.getProperty("db-password"));
         Statement stmt = conn.createStatement();
         return stmt;
     }

@@ -67,4 +67,3 @@
 -- insert into registration (uuid, student_uuid, course_uuid, section_number, grade, status) values ('1', '4', '1', 1, 'A', 'complete');
 -- insert into registration (uuid, student_uuid, course_uuid, section_number, grade, status) values ('2', '4', '2', 1, 'A', 'complete');
 
-alter table offering add column if not exists capacity int;update offering set capacity = 
