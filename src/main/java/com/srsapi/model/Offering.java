@@ -1,31 +1,36 @@
 package com.srsapi.model;
 
-import java.util.ArrayList;
-
 public class Offering {
 
+    private String uuid;
     private int section;
+    private String semester;
+    private int capacity;
+    private int year;
     private Course theCourse;
-    private ArrayList<Registration> studentList;
 
-    public void addStudent(Registration r) {
-        studentList.add(r);
-    }
+    
 
-    public void removeStudent(Registration r) {
-        studentList.remove(r);
-    }
-
-    public Offering(int section) {
-
+    public Offering( String uuid, int section, String semester, int year, Course theCourse) {
+        this.uuid = uuid;
         this.section = section;
-        studentList = new ArrayList<>();
+        this.semester = semester;
+        this.year = year;
+        this.theCourse = theCourse;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public int getSection() {
         return section;
     }
-
+   
     public void setSection(int section) {
         this.section = section;
     }
@@ -38,20 +43,22 @@ public class Offering {
         return theCourse;
     }
 
-    public ArrayList<Registration> getStudentList() {
-        return studentList;
+    public String getSemester() {
+        return semester;
     }
 
-    public void setStudentList(ArrayList<Registration> studentList) {
-        this.studentList = studentList;
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 
-    @Override
-    public String toString() {
-        return theCourse.toString() + " Section: " + section;
+
+    public int getYear() {
+        return year;
     }
 
-    public ArrayList<Registration> getStudents() {
-        return studentList;
+    public void setYear(int year) {
+        this.year = year;
     }
+
+   
 }

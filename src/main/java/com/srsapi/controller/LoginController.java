@@ -19,3 +19,13 @@ public class LoginController {
         }
     
 }
+
+
+/*
+ * documentation query this endpoint conntroller methods
+ * 
+ * 1- to login student by email and password
+ * request type: POST request url: http://localhost:8080/login request body: { "email":"email@example.com", "password":"password" }
+ * response e.g. : {"status":"success","message":"student found","data":1c6ca9cc-6232-4468-8737-e177469fac9f"}
+ */
+ 

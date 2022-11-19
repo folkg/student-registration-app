@@ -1,24 +1,26 @@
 package com.srsapi.model;
 
 public class Registration {
-
+    private String uuid;
     private Offering theOffering;
-    private Student theStudent;
+    private String theGrade;
+    private String theStatus;
 
-    private char theGrade;
 
-    public void register(Student theStudent, Offering theOffering) {
-        this.theStudent = theStudent;
+    public Registration(String uuid, Offering theOffering, String theGrade, String theStatus) {
+        this.uuid = uuid;
         this.theOffering = theOffering;
-        theOffering.addStudent(this);
-        theStudent.addCourse(this);
+        this.theGrade = theGrade;
+        this.theStatus = theStatus;
+    
     }
 
-    public void setTheGrade(char theGrade) {
+
+    public void setTheGrade(String theGrade) {
         this.theGrade = theGrade;
     }
 
-    public char getTheGrade() {
+    public String getTheGrade() {
         return theGrade;
     }
 
@@ -26,22 +28,28 @@ public class Registration {
         return theOffering;
     }
 
-    public Student getTheStudent() {
-        return theStudent;
-    }
-
-    @Override
-    public String toString() {
-        return theOffering.toString();
-    }
-
-    public void drop(Student student, Offering theOffering2) {
-        theOffering2.removeStudent(this);
-        student.removeCourse(this);
-    }
-
+    
     public Course getTheCourse() {
         return theOffering.getTheCourse();
     }
+
+    public String getTheStatus() {
+        return theStatus;
+    }
+
+    public void setTheStatus(String theStatus) {
+        this.theStatus = theStatus;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+
+
 
 }

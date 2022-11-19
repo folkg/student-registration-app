@@ -4,16 +4,29 @@ import java.util.ArrayList;
 
 public class Course {
 
+    private String uuid;
     private String courseName;
-    private String courseCode;
+    private String courseNumber;
+    private String courseDept;
+
     private ArrayList<Course> preReqs;
     private ArrayList<Offering> offeringList;
 
-    public Course(String courseName, String courseCode) {
+    public Course( String uuid,String courseName, String courseNumber, String courseDept) {
+        this.uuid = uuid;
         this.courseName = courseName;
-        this.courseCode = courseCode;
-        this.offeringList = new ArrayList<Offering>();
-        this.preReqs = new ArrayList<Course>();
+        this.courseNumber = courseNumber;
+        this.courseDept = courseDept;
+        preReqs = new ArrayList<>();
+        offeringList = new ArrayList<>();
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getCourseName() {
@@ -24,12 +37,21 @@ public class Course {
         this.courseName = courseName;
     }
 
-    public String getCourseCode() {
-        return courseCode;
+   
+    public String getCourseNumber() {
+        return courseNumber;
     }
 
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
+    public void setCourseNumber(String courseNumber) {
+        this.courseNumber = courseNumber;
+    }
+
+    public String getCourseDept() {
+        return courseDept;
+    }
+
+    public void setCourseDept(String courseDept) {
+        this.courseDept = courseDept;
     }
 
     public void setPreReqs(ArrayList<Course> preReqs) {
@@ -61,20 +83,5 @@ public class Course {
         return offeringList;
     }
 
-    @Override
-    public String toString() {
-        return "Course Name: " + courseName + "\n " +
-                "Course ID: " + courseCode + "\n";
-
-    }
-
-    public Offering searchOffering(int secNumber) {
-
-        for (Offering o : offeringList) {
-            if (o.getSection() == secNumber) {
-                return o;
-            }
-        }
-        return null;
-    }
+    
 }

@@ -12,14 +12,18 @@ public interface IDataStore {
 
     boolean checkEmail(String email);
 
-    jsonResponse studentCourses(String uuid);
+    jsonResponse getStudentCourses(String uuid);
 
-    jsonResponse addCourse(String uuid, String courseCode,int section);
+    jsonResponse addCourse(String studentuuid, String courseuuid, int section);
 
-    jsonResponse dropCourse(String uuid, String courseCode);
+    jsonResponse dropCourse(String studentuuid, String courseuuid, int section);
 
     jsonResponse getCourse(String courseCode);
 
     jsonResponse getAllCourses();
+
+    jsonResponse getCoursePreReqs(String courseuuid);
+
+    jsonResponse getCourseOfferings(String courseuuid);
 
 }

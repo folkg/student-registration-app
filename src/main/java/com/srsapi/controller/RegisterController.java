@@ -20,3 +20,12 @@ public class RegisterController {
 
     
 }
+
+/*
+ * documentation query this endpoint conntroller methods
+ * 
+ * 1- to register student
+ * request type: POST request url: http://localhost:8080/register request body: { "email":"email@example.com", "password":"password", "firstName":"firstName", "lastName":"lastName" }
+ * response e.g. : {"status":"success","message":"student registered","data":1c6ca9cc-6232-4468-8737-e177469fac9f"}
+ *
+ */

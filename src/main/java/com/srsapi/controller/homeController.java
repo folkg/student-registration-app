@@ -14,13 +14,13 @@ public class homeController {
 
     @Autowired
     DataStore dataStore;
-    
+
     @RequestMapping("/")
 
     public String homePage(Model model) {
-       jsonResponse res = dataStore.getStudent("1");
-         Student student = (Student) res.getData();
-         model.addAttribute("student", student);
+        jsonResponse res = dataStore.getStudent("1");
+        Student student = (Student) res.getData();
+        model.addAttribute("student", student);
         return "home";
 
     }

@@ -16,7 +16,7 @@ public class Student {
         courseList = new ArrayList<>();
     }
 
-    public Student(String firstName, String lastName, String email, String uuid, String password) {
+    public Student(String uuid, String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -84,93 +84,14 @@ public class Student {
         this.courseList = courseList;
     }
 
-    public Registration registerForCourse(CourseCat cat, String courseName, String courseCode, int secNumber) {
-
-        Course myCourse = cat.searchCat(courseName, courseCode);
-
-        if (myCourse == null) {
-            System.out.println("Course not found");
-            throw new RuntimeException("Course not found");
-        }
-
-        if (courseList.size() >= 6) {
-
-            System.out.println("You have already registered for 6 courses");
-            throw new RuntimeException("You have already registered for 6 courses");
-        }
-        for (Registration r : courseList) {
-            if (r.getTheCourse().equals(myCourse)) {
-                System.out.println("You are already registered for this course");
-                throw new RuntimeException("You are already registered for this course");
-            }
-        }
-        // check if the student has the pre-reqs
-        if (myCourse.getPreReqs().size() > 0) {
-            for (Course c : myCourse.getPreReqs()) {
-                boolean found = false;
-                for (Registration r : courseList) {
-                    if (r.getTheCourse().equals(c)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    throw new RuntimeException("You don't have the pre-reqs for this course, you need to take "
-                            + c.getCourseName() + " " + c.getCourseCode());
-
-                 
-                }
-            }
-        }
-
-        Offering myOffering = myCourse.searchOffering(secNumber);
-        if (myOffering == null) {
-            throw new RuntimeException("Section not found");
-        }
-
-        Registration myRegistration = new Registration();
-        myRegistration.register(this, myOffering);
-        myOffering.addStudent(myRegistration);
-
-
-        return myRegistration;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "name='" + firstName + '\'' +
-                ", id=" + uuid +
-                ", courseList=" + courseList +
-                '}';
-    }
-
-    public String dropCourse(CourseCat cat, String courseName, String courseCode, int i) {
-        Course myCourse = cat.searchCat(courseName, courseCode);
-        if (myCourse == null) {
-            System.out.println("Course not found");
-            return "Course not found";
-        }
-        Offering theOffering = myCourse.getOffering(i);
-        if (theOffering == null) {
-            System.out.println("Section not found");
-            return "Section not found";
-        }
-
-        for (Registration r : courseList) {
-            if (r.getTheCourse().equals(myCourse)) {
-                r.drop(this, theOffering);
-                System.out.println("Course dropped");
-                return null;
-            }
-        }
-        System.out.println("You are not registered for this course");
-        return "You are not registered for this course";
-
-    }
-
+    
+  
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
