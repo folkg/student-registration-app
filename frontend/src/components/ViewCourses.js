@@ -11,7 +11,15 @@ function ViewCourses(props) {
         <Typography component="h1" variant="h4" align="center">
           View Courses
         </Typography>
-        <Paper>
+        <Paper
+          elevation="4"
+          sx={{
+            padding: "1rem 2rem",
+            margin: " 1.5rem auto",
+            maxWidth: "sm",
+            alignItems: "center",
+          }}
+        >
           <List>
             {courses.map((c, idx) => (
               <React.Fragment key={c.id}>
@@ -30,6 +38,7 @@ function ViewCourses(props) {
 
 // Set default props
 ViewCourses.defaultProps = {
+  registrations: [{}],
   courses: [
     {
       id: "ENSF608",
@@ -45,6 +54,10 @@ ViewCourses.defaultProps = {
           name: "Python",
           prereqs: null,
         },
+      ],
+      offerings: [
+        { section: 1, year: 2022, semester: "fall" },
+        { section: 2, year: 2022, semester: "fall" },
       ],
     },
     {
@@ -62,16 +75,22 @@ ViewCourses.defaultProps = {
           prereqs: null,
         },
       ],
+      offerings: [
+        { section: 1, year: 2022, semester: "fall" },
+        { section: 2, year: 2022, semester: "fall" },
+      ],
     },
     {
       id: "ENSF592",
       name: "Java",
       prereqs: null,
+      offerings: [{ section: 1, year: 2022, semester: "summer" }],
     },
     {
       id: "ENSF593",
       name: "Python",
       prereqs: null,
+      offerings: [{ section: 1, year: 2022, semester: "summer" }],
     },
   ],
 };

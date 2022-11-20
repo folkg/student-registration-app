@@ -7,7 +7,7 @@ import "./App.css";
 function App() {
   const routes = CreateRoutes();
   return (
-    <div>
+    <div className="wrapper ">
       <h1>App</h1>
       {routes}
     </div>

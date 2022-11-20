@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Box, Typography, Paper, Button } from "@mui/material/";
+import { Container, Typography, Paper, Button } from "@mui/material/";
 
 export default function Dashboard() {
   //TODO: Make MUI. Maybe just make each link a button.
@@ -20,6 +20,9 @@ export default function Dashboard() {
       >
         <Button variant="contained" href="/viewcourses" sx={{ margin: 1 }}>
           View Courses
+        </Button>
+        <Button variant="contained" href="/searchcourses" sx={{ margin: 1 }}>
+          Search Courses
         </Button>
         <Button variant="contained" sx={{ margin: 1 }}>
           Register for Course

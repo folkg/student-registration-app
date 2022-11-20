@@ -2,9 +2,8 @@ import React from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
 
 function Course(props) {
-  const { id, name, prereqs } = props.course;
+  const { id, name, prereqs, offerings } = props.course;
 
-  //TODO: Make MUI
   return (
     <ListItem>
       <Box
@@ -18,6 +17,18 @@ function Course(props) {
         <Typography component="h1" variant="h5" color="text.primary">
           {id} - {name}
         </Typography>
+        <Typography component="h1" variant="h6">
+          Offerings:
+        </Typography>
+        <List>
+          {offerings == null
+            ? "None"
+            : offerings.map((o) => (
+                <ListItem key={o.id}>
+                  Section {o.section} - {o.semester} {o.year}
+                </ListItem>
+              ))}
+        </List>
         <Typography component="h1" variant="h6">
           Prerequisites:
         </Typography>

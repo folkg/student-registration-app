@@ -4,6 +4,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import ViewCourses from "./ViewCourses";
+import SearchCourses from "./SearchCourses";
 
 function CreateRoutes() {
   // Create a token for the user and save in session storage. Default value is null.
@@ -53,6 +54,15 @@ function CreateRoutes() {
         element={
           <PrivateRoute>
             <ViewCourses />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        exact
+        path="/searchcourses"
+        element={
+          <PrivateRoute>
+            <SearchCourses />
           </PrivateRoute>
         }
       />
