@@ -1,20 +1,26 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { StudentAPIContext } from "../contexts/student-api-provider";
+
 import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import ViewCourses from "./ViewCourses";
 import SearchCourses from "./SearchCourses";
 
-function CreateRoutes() {
-  // check to ensure we are logged in before navigating to a private page
-  function PrivateRoute({ children }) {
-    return token ? children : <Navigate to="/login" />;
-  }
+// check to ensure we are logged in before navigating to a private page
+function PrivateRoute({ children }) {
+  const { isLoggedIn } = useContext(StudentAPIContext);
+  return isLoggedIn() ? children : <Navigate to="/login" />;
+}
 
-  // don't allow navigation to the certain pages if user is already authenticated
-  function AnonymousRoute({ children }) {
-    return token ? <Navigate to="/" /> : children;
-  }
+// don't allow navigation to the certain pages if user is already authenticated
+function AnonymousRoute({ children }) {
+  const { isLoggedIn } = useContext(StudentAPIContext);
+  return isLoggedIn() ? <Navigate to="/" /> : children;
+}
+
+function CreateRoutes() {
   return (
     <Routes>
       <Route
@@ -22,7 +28,7 @@ function CreateRoutes() {
         path="/login"
         element={
           <AnonymousRoute>
-            <Login setToken={setToken} />
+            <Login />
           </AnonymousRoute>
         }
       />

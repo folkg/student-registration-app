@@ -39,6 +39,11 @@ export function StudentAPIProvider(props) {
     }
   }
 
+  const isLoggedIn = () => {
+    console.log(token);
+    return token != null;
+  };
+
   async function register(email, password, firstName, lastName) {
     // Send credentials to server and save the token from the response
     try {
@@ -162,6 +167,7 @@ export function StudentAPIProvider(props) {
     <StudentAPIContext.Provider
       value={{
         login,
+        isLoggedIn,
         register,
         getLoggedInStudentInfo,
         getStudentCourses,
