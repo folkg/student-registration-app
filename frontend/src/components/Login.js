@@ -77,6 +77,7 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
+            autoComplete="email"
             label="Email Address"
             type="email"
             value={email || ""}
@@ -86,6 +87,7 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
+            autoComplete="current-password"
             label="Password"
             type="password"
             value={password || ""}

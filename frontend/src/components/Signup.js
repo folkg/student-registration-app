@@ -48,34 +48,38 @@ export default function Signup() {
             margin="normal"
             required
             fullWidth
+            autoComplete="given-name"
             label="First Name"
-            value={firstName}
+            value={firstName || ""}
             onChange={(e) => setFirstName(e.target.value)}
           />
           <TextField
             margin="normal"
             required
             fullWidth
+            autoComplete="family-name"
             label="Last Name"
-            value={lastName}
+            value={lastName || ""}
             onChange={(e) => setLastName(e.target.value)}
           />
           <TextField
             margin="normal"
             required
             fullWidth
+            autoComplete="email"
             label="Email Address"
             type="email"
-            value={email}
+            value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
             required
             fullWidth
+            autoComplete="new-password"
             label="Password"
             type="password"
-            value={password}
+            value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
           />
           {signupStatus === true ? (
