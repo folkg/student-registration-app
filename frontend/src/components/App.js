@@ -1,4 +1,5 @@
 import CreateRoutes from "./CreateRoutes";
+import { StudentAPIProvider } from "../contexts/student-api-provider";
 import "./App.css";
 
 //TODO: Do we want navbar?
@@ -9,7 +10,7 @@ function App() {
   return (
     <div className="wrapper ">
       <h1>App</h1>
-      {routes}
+      <StudentAPIProvider>{routes}</StudentAPIProvider>
     </div>
   );
 }

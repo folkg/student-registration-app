@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StudentAPIContext } from "../contexts/student-api-provider";
 import {
   Alert,
   AlertTitle,
@@ -10,26 +11,9 @@ import {
   Container,
 } from "@mui/material";
 
-async function loginUser(credentials) {
-  // TODO: Modify to verify credentials with our server
-  // Send credentials to server and return the token from the response
-  // const response = await fetch("http://10.13.179.216:8080/student/Login", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(credentials),
-  // });
-  // const body = JSON.parse(response.body);
-  // return body.status === "success" ? body.data : null;
-
-  //tempory measure to allow login with any credentials
-  return "fake_token";
-}
-
-export default function Login(props) {
-  // import the setToken function passed in from CreateRoutes in props
-  const setToken = props.setToken;
+export default function Login() {
+  // import the login function from the StudentAPIContext
+  const { login } = useContext(StudentAPIContext);
   // keep track of email and password state
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -38,14 +22,9 @@ export default function Login(props) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const token = await loginUser({
-      email,
-      password,
-    });
-    // set the token using the function passed in from CreateRoutes in props
-    setToken(token);
+    const result = await login(email, password);
     // set login error status
-    if (!token) setLoginError(true);
+    if (!result) setLoginError(true);
     else setLoginError(false);
   }
 
@@ -101,7 +80,7 @@ export default function Login(props) {
             fullWidth
             label="Email Address"
             type="email"
-            value={email}
+            value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
@@ -110,13 +89,13 @@ export default function Login(props) {
             fullWidth
             label="Password"
             type="password"
-            value={password}
+            value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
           />
           {loginError && (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Email / Password entered is incorrect. Please re-try.
+              There was an issue with login. Please re-try.
             </Alert>
           )}
           <Button
