@@ -5,8 +5,9 @@ import { StudentAPIContext } from "../contexts/student-api-provider";
 import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
-import ViewCourses from "./ViewCourses";
 import SearchCourses from "./SearchCourses";
+import ViewAllCourses from "./ViewAllCourses";
+import ViewRegisteredCourses from "./ViewRegisteredCourses";
 
 // check to ensure we are logged in before navigating to a private page
 function PrivateRoute({ children }) {
@@ -52,10 +53,19 @@ function CreateRoutes() {
       />
       <Route
         exact
-        path="/viewcourses"
+        path="/viewallcourses"
         element={
           <PrivateRoute>
-            <ViewCourses />
+            <ViewAllCourses />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        exact
+        path="/viewregisteredcourses"
+        element={
+          <PrivateRoute>
+            <ViewRegisteredCourses />
           </PrivateRoute>
         }
       />

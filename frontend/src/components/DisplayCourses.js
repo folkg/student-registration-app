@@ -1,35 +1,32 @@
 import React from "react";
-import { Container, Typography, Paper, List, Divider } from "@mui/material/";
+import { Paper, List, Divider } from "@mui/material/";
 import Course from "./Course";
 
-function ViewCourses(props) {
+function DisplayCourses(props) {
   const { courses } = props;
 
   if (courses.length > 0) {
     return (
-      <Container>
-        <Typography component="h1" variant="h4" align="center">
-          View Courses
-        </Typography>
-        <Paper
-          elevation="4"
-          sx={{
-            padding: "1rem 2rem",
-            margin: " 1.5rem auto",
-            maxWidth: "sm",
-            alignItems: "center",
-          }}
-        >
-          <List>
-            {courses.map((c, idx) => (
-              <React.Fragment key={c.id}>
-                <Course course={c} />
-                {idx < courses.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-          </List>
-        </Paper>
-      </Container>
+      <Paper
+        elevation="4"
+        sx={{
+          padding: "1rem 2rem",
+          margin: " 1.5rem auto",
+          maxWidth: "sm",
+          alignItems: "center",
+        }}
+      >
+        <List>
+          {courses == null
+            ? "No courses."
+            : courses.map((c, idx) => (
+                <React.Fragment key={c.id}>
+                  <Course course={c} />
+                  {idx < courses.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+        </List>
+      </Paper>
     );
   } else {
     return null;
@@ -37,7 +34,7 @@ function ViewCourses(props) {
 }
 
 // Set default props
-ViewCourses.defaultProps = {
+DisplayCourses.defaultProps = {
   registrations: [{}],
   courses: [
     {
@@ -95,4 +92,4 @@ ViewCourses.defaultProps = {
   ],
 };
 
-export default ViewCourses;
+export default DisplayCourses;

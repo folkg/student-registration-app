@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  Container,
-  Button,
-  TextField,
-  Typography,
-  Box,
-  Paper,
-  List,
-  Divider,
-} from "@mui/material/";
-import Course from "./Course";
+import { Container, Button, TextField, Typography, Box } from "@mui/material/";
+import DisplayCourses from "./DisplayCourses";
 
 async function search(parameters) {
   // TODO: Modify to verify credentials with our server
@@ -78,28 +69,7 @@ function SearchCourses() {
             Search
           </Button>
         </form>
-        <Paper
-          elevation="4"
-          sx={{
-            padding: "1rem 2rem",
-            margin: " 1.5rem auto",
-            maxWidth: "sm",
-            alignItems: "center",
-          }}
-        >
-          {searchResults == null ? (
-            <Typography>No results.</Typography>
-          ) : (
-            <List>
-              {searchResults.map((c, idx) => (
-                <React.Fragment key={c.id}>
-                  <Course course={c} />
-                  {idx < searchResults.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List>
-          )}
-        </Paper>
+        <DisplayCourses courses={searchResults} />
       </Box>
     </Container>
   );

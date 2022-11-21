@@ -22,8 +22,15 @@ export default function Dashboard() {
           alignItems: "center",
         }}
       >
-        <Button variant="contained" href="/viewcourses" sx={{ margin: 1 }}>
-          View Courses
+        <Button variant="contained" href="/viewallcourses" sx={{ margin: 1 }}>
+          View All Courses
+        </Button>
+        <Button
+          variant="contained"
+          href="/viewregisteredcourses"
+          sx={{ margin: 1 }}
+        >
+          View Registered Courses
         </Button>
         <Button variant="contained" href="/searchcourses" sx={{ margin: 1 }}>
           Search Courses
