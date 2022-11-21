@@ -24,8 +24,7 @@ export default function Login() {
     e.preventDefault();
     const result = await login(email, password);
     // set login error status
-    if (!result) setLoginError(true);
-    else setLoginError(false);
+    setLoginError(!result);
   }
 
   //TODO: Delete below. Keeping for now just to show what simple HTML looked like before using MUI components

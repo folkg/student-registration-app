@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { StudentAPIContext } from "../contexts/student-api-provider";
 import {
   Alert,
   AlertTitle,
@@ -10,39 +11,22 @@ import {
   Container,
 } from "@mui/material";
 
-async function registerUser(userDetails) {
-  // TODO: Modify to verify credentials with our server
-  // Send credentials to server and return the token from the response
-  const response = await fetch("http://10.13.179.216:8080/student/Login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userDetails),
-  });
-  const body = JSON.parse(response.body);
-  return body.status === "success";
-}
-
 export default function Signup() {
+  // import the signup function from the StudentAPIContext
+  const { register } = useContext(StudentAPIContext);
   // keep track of field states
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   // use a state to keep track of whether or not there is an error with signup
-  const [signupError, setSignupError] = useState(false);
+  const [signupStatus, setSignupStatus] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const result = await registerUser({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    // set signup error status
-    setSignupError(!result);
+    const result = await register(firstName, lastName, email, password);
+    // set signup status
+    setSignupStatus(result);
   }
 
   return (
@@ -94,11 +78,17 @@ export default function Signup() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {signupError && (
-            <Alert severity="error">
-              <AlertTitle>Error</AlertTitle>
-              Registratin was unsuccessful. Please re-try.
+          {signupStatus === true ? (
+            <Alert severity="success">
+              Registation was successful. Please login.
             </Alert>
+          ) : (
+            signupStatus === false && (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                Registration was unsuccessful. Please re-try.
+              </Alert>
+            )
           )}
           <Button
             type="submit"

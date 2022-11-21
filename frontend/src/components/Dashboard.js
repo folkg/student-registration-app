@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { StudentAPIContext } from "../contexts/student-api-provider";
 import { Container, Typography, Paper, Button } from "@mui/material/";
 
 export default function Dashboard() {
-  //TODO: Make MUI. Maybe just make each link a button.
+  // import the necessary functions from the StudentAPIContext
+  const { getLoggedInStudentInfo } = useContext(StudentAPIContext);
+  // get the information for the logged in student
+  const { firstName, lastName, id } = getLoggedInStudentInfo();
   return (
     <Container>
       <Typography component="h1" variant="h4" align="center">
-        Dashboard
+        {firstName} {lastName} ({id})
       </Typography>
       <Paper
         sx={{
