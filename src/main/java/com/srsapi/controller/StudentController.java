@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.srsapi.dao.DataStore;
-import com.srsapi.dao.IDataStore;
+import com.srsapi.data.DataStore;
+import com.srsapi.data.IDataStore;
 import com.srsapi.model.Student;
 import com.srsapi.model.jsonResponse;
 

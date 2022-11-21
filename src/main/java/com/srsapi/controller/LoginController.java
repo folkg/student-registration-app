@@ -2,7 +2,8 @@ package com.srsapi.controller;
 
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.web.bind.annotation.*;
-import com.srsapi.dao.DataStore;
+
+import com.srsapi.data.DataStore;
 import com.srsapi.model.Student;
 import com.srsapi.model.jsonResponse;
 
