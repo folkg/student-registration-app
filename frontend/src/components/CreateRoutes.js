@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSessionStorageState } from "../hooks/useSessionStorageState";
 import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
@@ -7,9 +6,6 @@ import ViewCourses from "./ViewCourses";
 import SearchCourses from "./SearchCourses";
 
 function CreateRoutes() {
-  // Create a token for the user and save in session storage. Default value is null.
-  const [token, setToken] = useSessionStorageState("token", null);
-
   // check to ensure we are logged in before navigating to a private page
   function PrivateRoute({ children }) {
     return token ? children : <Navigate to="/login" />;
