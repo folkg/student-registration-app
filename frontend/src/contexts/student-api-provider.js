@@ -25,10 +25,13 @@ export function StudentAPIProvider(props) {
         }),
       });
 
-      const body = JSON.parse(response.body);
+      const body = await response.json();
+      console.log(body);
       if (body.status === "success") {
         // Set the token in session storage for use in later API calls
-        setToken(body.data);
+        const token = body.data;
+        setToken(token);
+        getStudent(token);
         return true;
       } else {
         return false;
@@ -40,7 +43,6 @@ export function StudentAPIProvider(props) {
   }
 
   const isLoggedIn = () => {
-    console.log(token);
     return token != null;
   };
 
@@ -53,14 +55,14 @@ export function StudentAPIProvider(props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email,
-          password,
           firstName,
           lastName,
+          email,
+          password,
         }),
       });
-
-      const body = JSON.parse(response.body);
+      const body = await response.json();
+      console.log(body);
       return body.status === "success";
     } catch (e) {
       console.log(e);
@@ -68,17 +70,19 @@ export function StudentAPIProvider(props) {
     }
   }
 
-  async function getStudent() {
+  async function getStudent(id) {
     // Send studentID to server and save student info from the response
     try {
-      const response = await fetch(API_URL + "student/" + token, {
+      console.log(token);
+      const response = await fetch(API_URL + "student/" + id, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      const body = JSON.parse(response.body);
+      const body = await response.json();
+      console.log(body);
       if (body.status === "success") {
         // Set the studentInfo in session storage for use in later API calls
         setStudentInfo(body.data);
@@ -92,15 +96,9 @@ export function StudentAPIProvider(props) {
     }
   }
 
-  async function getLoggedInStudentInfo() {
-    // Returns the information for the logged in student
-    // Fetches the student info first if it isn't currently stored
-    if (studentInfo === null) await getStudent();
-    return studentInfo;
-  }
-
   async function getStudentCourses() {
     //TODO: Implement function body
+    return null;
   }
 
   async function addCourse() {
@@ -120,7 +118,8 @@ export function StudentAPIProvider(props) {
         },
       });
 
-      const body = JSON.parse(response.body);
+      const body = await response.json();
+      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -142,7 +141,8 @@ export function StudentAPIProvider(props) {
         },
       });
 
-      const body = JSON.parse(response.body);
+      const body = await response.json();
+      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -163,13 +163,36 @@ export function StudentAPIProvider(props) {
     //TODO: Implement function body
   }
 
+  async function searchCourse(query) {
+    try {
+      const response = await fetch(API_URL + "course/search?query=" + query, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const body = await response.json();
+      console.log(body);
+      if (body.status === "success") {
+        // Return the result
+        return body.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
+
   return (
     <StudentAPIContext.Provider
       value={{
         login,
         isLoggedIn,
         register,
-        getLoggedInStudentInfo,
+        studentInfo,
         getStudentCourses,
         addCourse,
         dropCourse,
@@ -177,6 +200,7 @@ export function StudentAPIProvider(props) {
         getCourse,
         getCoursePrerequisites,
         getCourseOfferings,
+        searchCourse,
       }}
     >
       {props.children}

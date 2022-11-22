@@ -24,7 +24,7 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const result = await register(firstName, lastName, email, password);
+    const result = await register(email, password, firstName, lastName);
     // set signup status
     setSignupStatus(result);
   }

@@ -3,15 +3,19 @@ import { StudentAPIContext } from "../contexts/student-api-provider";
 import { Container, Typography, Paper, Button } from "@mui/material/";
 
 export default function Dashboard() {
-  // import the necessary functions from the StudentAPIContext
-  const { getLoggedInStudentInfo } = useContext(StudentAPIContext);
-  // get the information for the logged in student
-  const { firstName, lastName, id } = getLoggedInStudentInfo();
+  // get the information for the logged in student from the StudentAPIContext
+  const { studentInfo } = useContext(StudentAPIContext);
   return (
     <Container>
-      <Typography component="h1" variant="h4" align="center">
-        {firstName} {lastName} ({id})
-      </Typography>
+      {studentInfo == null ? (
+        <Typography component="h1" variant="h4" align="center">
+          Loading Student Info...
+        </Typography>
+      ) : (
+        <Typography component="h1" variant="h4" align="center">
+          Welcome, {studentInfo.firstName} {studentInfo.lastName}
+        </Typography>
+      )}
       <Paper
         sx={{
           padding: "1rem 2rem",
@@ -22,23 +26,47 @@ export default function Dashboard() {
           alignItems: "center",
         }}
       >
-        <Button variant="contained" href="/viewallcourses" sx={{ margin: 1 }}>
+        <Button
+          variant="contained"
+          href="/viewallcourses"
+          disabled={!studentInfo}
+          fullWidth
+          sx={{ margin: 1 }}
+        >
           View All Courses
         </Button>
         <Button
           variant="contained"
           href="/viewregisteredcourses"
+          disabled={!studentInfo}
+          fullWidth
           sx={{ margin: 1 }}
         >
           View Registered Courses
         </Button>
-        <Button variant="contained" href="/searchcourses" sx={{ margin: 1 }}>
+        <Button
+          variant="contained"
+          href="/searchcourses"
+          disabled={!studentInfo}
+          fullWidth
+          sx={{ margin: 1 }}
+        >
           Search Courses
         </Button>
-        <Button variant="contained" sx={{ margin: 1 }}>
+        <Button
+          variant="contained"
+          disabled={!studentInfo}
+          fullWidth
+          sx={{ margin: 1 }}
+        >
           Register for Course
         </Button>
-        <Button variant="contained" sx={{ margin: 1 }}>
+        <Button
+          variant="contained"
+          disabled={!studentInfo}
+          fullWidth
+          sx={{ margin: 1 }}
+        >
           Drop Course
         </Button>
       </Paper>

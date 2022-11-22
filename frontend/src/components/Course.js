@@ -2,7 +2,8 @@ import React from "react";
 import { Box, List, ListItem, Typography } from "@mui/material";
 
 function Course(props) {
-  const { id, name, prereqs, offerings } = props.course;
+  const { courseNumber, courseName, courseDept, preReqs, offeringList } =
+    props.course;
 
   return (
     <ListItem>
@@ -15,15 +16,18 @@ function Course(props) {
         }}
       >
         <Typography component="h1" variant="h5" color="text.primary">
-          {id} - {name}
+          {courseNumber} -{courseName}
+        </Typography>
+        <Typography component="h1" variant="h6" color="text.secondary">
+          {courseDept}
         </Typography>
         <Typography component="h1" variant="h6">
           Offerings:
         </Typography>
         <List>
-          {offerings == null
+          {offeringList == null
             ? "None"
-            : offerings.map((o) => (
+            : offeringList.map((o) => (
                 <ListItem key={o.id}>
                   Section {o.section} - {o.semester} {o.year}
                 </ListItem>
@@ -33,11 +37,11 @@ function Course(props) {
           Prerequisites:
         </Typography>
         <List>
-          {prereqs == null
+          {preReqs == null
             ? "None"
-            : prereqs.map((p) => (
+            : preReqs.map((p) => (
                 <ListItem key={p.id}>
-                  {p.id} - {p.name}
+                  {p.courseNumber} - {p.courseName}
                 </ListItem>
               ))}
         </List>
