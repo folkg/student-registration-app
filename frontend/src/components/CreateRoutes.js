@@ -21,6 +21,8 @@ function AnonymousRoute({ children }) {
   return isLoggedIn() ? <Navigate to="/" /> : children;
 }
 
+//TODO: Add route to register and drop courses
+
 function CreateRoutes() {
   return (
     <Routes>

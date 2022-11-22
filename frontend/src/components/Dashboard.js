@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { StudentAPIContext } from "../contexts/student-api-provider";
 import { Container, Typography, Paper, Button } from "@mui/material/";
 
+//TODO: Add links to the register and drop courses after adding routes
+
 export default function Dashboard() {
   // get the information for the logged in student from the StudentAPIContext
   const { studentInfo } = useContext(StudentAPIContext);
