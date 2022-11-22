@@ -3,23 +3,6 @@ import { StudentAPIContext } from "../contexts/student-api-provider";
 import { Container, Button, TextField, Typography, Box } from "@mui/material/";
 import DisplayCourses from "./DisplayCourses";
 
-async function search(parameters) {
-  // TODO: Modify to verify credentials with our server
-  // Send credentials to server and return the token from the response
-  // const response = await fetch("http://10.13.179.216:8080/student/Login", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(credentials),
-  // });
-  // const body = JSON.parse(response.body);
-  // return body.status === "success" ? body.data : null;
-
-  //tempory measure to allow login with any credentials
-  return null;
-}
-
 function SearchCourses() {
   const [query, setQuery] = useState();
 

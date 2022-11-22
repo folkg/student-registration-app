@@ -9,15 +9,19 @@ export default function Dashboard() {
   const { studentInfo } = useContext(StudentAPIContext);
   return (
     <Container>
-      {studentInfo == null ? (
-        <Typography component="h1" variant="h4" align="center">
-          Loading Student Info...
-        </Typography>
-      ) : (
-        <Typography component="h1" variant="h4" align="center">
-          Welcome, {studentInfo.firstName} {studentInfo.lastName}
-        </Typography>
-      )}
+      <Typography
+        component="h1"
+        variant="h4"
+        align="center"
+        sx={{
+          p: "1rem",
+        }}
+      >
+        {studentInfo == null
+          ? "Loading Student Info..."
+          : "Please Select an Option from the Menu below"}
+      </Typography>
+
       <Paper
         sx={{
           padding: "1rem 2rem",
