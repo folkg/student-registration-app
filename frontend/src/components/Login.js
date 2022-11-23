@@ -18,13 +18,13 @@ export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   // use a state to keep track of whether or not there is an error with login
-  const [loginError, setLoginError] = useState(false);
+  const [loginStatus, setLoginStatus] = useState(true);
 
   async function handleSubmit(e) {
     e.preventDefault();
     const result = await login(email, password);
     // set login error status
-    setLoginError(!result);
+    setLoginStatus(result);
   }
 
   //TODO: Delete below. Keeping for now just to show what simple HTML looked like before using MUI components
@@ -93,10 +93,10 @@ export default function Login() {
             value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {loginError && (
+          {loginStatus !== true && (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              There was an issue with login. Please re-try.
+              {loginStatus}
             </Alert>
           )}
           <Button

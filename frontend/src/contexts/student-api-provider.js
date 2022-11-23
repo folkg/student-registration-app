@@ -33,12 +33,10 @@ export function StudentAPIProvider(props) {
         setToken(token);
         getStudent(token);
         return true;
-      } else {
-        return false;
-      }
+      } else return body.message;
     } catch (e) {
       console.log(e);
-      return false;
+      return "Server communication error";
     }
   }
 
@@ -63,10 +61,12 @@ export function StudentAPIProvider(props) {
       });
       const body = await response.json();
       console.log(body);
-      return body.status === "success";
+
+      if (body.status === "success") return true;
+      else return body.message;
     } catch (e) {
       console.log(e);
-      return false;
+      return "Server communication error";
     }
   }
 
@@ -103,10 +103,12 @@ export function StudentAPIProvider(props) {
 
   async function addCourse() {
     //TODO: Implement function body
+    return null;
   }
 
   async function dropCourse() {
     //TODO: Implement function body
+    return null;
   }
 
   async function getAllCourses() {

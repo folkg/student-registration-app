@@ -87,10 +87,10 @@ export default function Signup() {
               Registation was successful. Please login.
             </Alert>
           ) : (
-            signupStatus === false && (
+            signupStatus != null && (
               <Alert severity="error">
                 <AlertTitle>Error</AlertTitle>
-                Registration was unsuccessful. Please re-try.
+                {signupStatus}
               </Alert>
             )
           )}
