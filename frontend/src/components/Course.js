@@ -4,7 +4,7 @@ import { Box, List, ListItem, Typography } from "@mui/material";
 function Course(props) {
   const { courseNumber, courseName, courseDept, preReqs, offeringList } =
     props.course;
-
+  console.log(offeringList);
   return (
     <ListItem>
       <Box
@@ -25,7 +25,7 @@ function Course(props) {
           Offerings:
         </Typography>
         <List>
-          {offeringList == null
+          {offeringList == null || offeringList.length === 0
             ? "None"
             : offeringList.map((o) => (
                 <ListItem key={o.id}>
@@ -37,7 +37,7 @@ function Course(props) {
           Prerequisites:
         </Typography>
         <List>
-          {preReqs == null
+          {preReqs == null || preReqs.length === 0
             ? "None"
             : preReqs.map((p) => (
                 <ListItem key={p.id}>

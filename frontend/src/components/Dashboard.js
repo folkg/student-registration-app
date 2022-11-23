@@ -31,6 +31,7 @@ export default function Dashboard() {
           flexDirection: "column",
           alignItems: "center",
         }}
+        elevation={2}
       >
         <Button
           variant="contained"

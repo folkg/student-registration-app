@@ -13,6 +13,7 @@ function DisplayCourses(props) {
         maxWidth: "sm",
         alignItems: "center",
       }}
+      elevation={2}
     >
       <List>
         {loading

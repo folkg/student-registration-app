@@ -8,7 +8,7 @@ function NavBar() {
   const { darkMode, setDarkMode } = useContext(DarkModeContext);
   const { studentInfo } = useContext(StudentAPIContext);
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar style={{ justifyContent: "space-between" }}>
         <Typography>
           {studentInfo
