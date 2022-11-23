@@ -1,33 +1,27 @@
 import React from "react";
-import { Paper, List, Divider } from "@mui/material/";
-import Course from "./Course";
+import { Container, Paper, Typography } from "@mui/material/";
+import CourseCard from "./CourseCard";
 
 function DisplayCourses(props) {
   const { courses, loading } = props;
-  console.log(courses);
   return (
-    <Paper
-      sx={{
-        padding: "1rem 2rem",
-        margin: " 1.5rem auto",
-        maxWidth: "sm",
-        alignItems: "center",
-      }}
-      elevation={2}
-    >
-      <List>
-        {loading
-          ? "Loading..."
-          : courses == null
-          ? "No courses."
-          : courses.map((c, idx) => (
-              <React.Fragment key={c.id}>
-                <Course course={c} />
-                {idx < courses.length - 1 && <Divider />}
-              </React.Fragment>
-            ))}
-      </List>
-    </Paper>
+    <Container>
+      {loading ? (
+        <Paper sx={{ m: "2rem", p: "1rem" }} elevation={2} align="center">
+          <Typography>Loading...</Typography>
+        </Paper>
+      ) : courses == null ? (
+        <Paper sx={{ m: "2rem", p: "1rem" }} elevation={2} align="center">
+          <Typography>No courses.</Typography>
+        </Paper>
+      ) : (
+        courses.map((c) => (
+          <React.Fragment key={c.id}>
+            <CourseCard course={c} />
+          </React.Fragment>
+        ))
+      )}
+    </Container>
   );
 }
 
