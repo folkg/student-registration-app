@@ -4,7 +4,6 @@ import { DarkModeProvider } from "../contexts/theme.context";
 import { Paper } from "@mui/material/";
 import NavBar from "./NavBar";
 
-//TODO: Do we want navbar?
 //TODO: Change the name of the document in the browser bar
 
 function App() {

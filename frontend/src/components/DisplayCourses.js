@@ -5,6 +5,8 @@ import CourseCard from "./CourseCard";
 
 function DisplayCourses(props) {
   const { courses, loading } = props;
+  // const courses = props.courses;
+  // const loading = props.loading;
   return (
     <Container
       sx={{
