@@ -8,15 +8,16 @@ function ViewAllCourses() {
   const [courseList, setCourseList] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function fetchCourses() {
-    setLoading(true);
-    setCourseList(await getAllCourses());
-    setLoading(false);
-  }
-
   // [] option will behave like depreciated componentDidMount and run only once at startup
   useEffect(() => {
+    async function fetchCourses() {
+      setLoading(true);
+      setCourseList(await getAllCourses());
+      setLoading(false);
+    }
+
     fetchCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

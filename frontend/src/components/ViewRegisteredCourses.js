@@ -8,16 +8,17 @@ function ViewRegisteredCourses() {
   const [courseList, setCourseList] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  //TODO: Are registered courses saved in the proper format in sessionstorage? Can we use that instead of API?
-  async function fetchCourses() {
-    setLoading(true);
-    setCourseList(await getStudentCourses());
-    setLoading(false);
-  }
-
   // [] option will behave like depreciated componentDidMount and run only once at startup
   useEffect(() => {
+    //TODO: Are registered courses saved in the proper format in sessionstorage? Can we use that instead of API?
+    async function fetchCourses() {
+      setLoading(true);
+      setCourseList(await getStudentCourses());
+      setLoading(false);
+    }
+
     fetchCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
