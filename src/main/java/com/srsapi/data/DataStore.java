@@ -227,26 +227,25 @@ public class DataStore implements IDataStore {
             }
 
             stmt = getStatement();
-            String strSelect = "select * from registration join course on registration.course_uuid = course.uuid join offering on registration.course_uuid = offering.course_uuid and registration.section_number = offering.section_number where registration.student_uuid= '"
+            String strSelect = "select * from registration join course on registration.course_uuid = course.uuid join offering on registration.course_uuid = offering.course_uuid and registration.section_number = offering.section_number join department on course.department_uuid = department.uuid where registration.student_uuid = '"
                     + uuid + "' and (registration.status = 'registered' or registration.status = 'completed')";
-
             rset = stmt.executeQuery(strSelect);
             List<Registration> courses = new ArrayList<Registration>();
             while (rset.next()) {
                 String courseUuid = rset.getString("course_uuid");
                 String courseName = rset.getString("name");
                 String courseNumber = rset.getString("number");
-                String courseDept = rset.getString("department");
+                String courseDepartment = rset.getString("department.name");
+                String deptUuid = rset.getString("department.uuid");
 
-                String reguuid = rset.getString("uuid");
                 int sectionNumber = rset.getInt("section_number");
                 String semester = rset.getString("semester");
                 int year = rset.getInt("year");
                 String status = rset.getString("status");
                 String grade = rset.getString("grade");
-                Course course = new Course(courseUuid, courseName, courseNumber, courseDept);
-                Offering offering = new Offering("", sectionNumber, semester, year, course);
-                Registration reg = new Registration(reguuid, offering, grade, status);
+                Course course = new Course(courseUuid, courseName, courseNumber, courseDepartment, deptUuid);
+                Offering offering = new Offering("", sectionNumber, semester, year, course, 0);
+                Registration reg = new Registration(offering, grade, status);
                 courses.add(reg);
             }
             while (rset.next()) {
@@ -295,36 +294,38 @@ public class DataStore implements IDataStore {
             }
 
             stmt = getStatement();
-            String strSelect = "select * from offering where course_uuid = '" + courseuuid + "' and section_number = "
-                    + section;
+            String strSelect = "select * from offering join course on offering.course_uuid = course.uuid join department on course.department_uuid = department.uuid where offering.course_uuid = '"
+                    + courseuuid + "' and offering.section_number = " + section;
             rset = stmt.executeQuery(strSelect);
             if (rset.next()) {
-                String offeringUuid = rset.getString("uuid");
+                String offeringUuid = rset.getString("offering.uuid");
                 String offeringSemester = rset.getString("semester");
                 int offeringYear = rset.getInt("year");
-                strSelect = "select * from course where uuid = '" + courseuuid + "'";
-                rset = stmt.executeQuery(strSelect);
-                if (rset.next()) {
-                    String courseName = rset.getString("name");
-                    String courseNumber = rset.getString("number");
-                    String courseDepartment = rset.getString("department");
-                    Course course = new Course(courseuuid, courseName, courseNumber, courseDepartment);
-                    Offering offering = new Offering(offeringUuid, section, offeringSemester, offeringYear, course);
-                    String registrationUuid = UUID.randomUUID().toString();
-                    String strInsert = "insert into registration (uuid, student_uuid, course_uuid, section_number, grade, status) values ('"
-                            + registrationUuid + "', '" + studentuuid + "', '" + courseuuid + "', " + section + ", '"
-                            + "NA" + "', '" + "registered" + "')";
-                    int countInserted = stmt.executeUpdate(strInsert);
-                    if (countInserted == 1) {
-                        Registration registration = new Registration(registrationUuid, offering, "NA", "registered");
+                String courseName = rset.getString("course.name");
+                String courseNumber = rset.getString("number");
+                String courseDepartment = rset.getString("department.name");
+                String deptUuid = rset.getString("department.uuid");
+                Course course = new Course(courseuuid, courseName, courseNumber, courseDepartment, deptUuid);
+                Offering offering = new Offering(offeringUuid, section, offeringSemester, offeringYear, course, 0);
+                String strInsert = "insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('"
+                        + studentuuid + "', '" + courseuuid + "', " + section + ", '"
+                        + "NA" + "', '" + "registered" + "')";
+                int countInserted = stmt.executeUpdate(strInsert);
+                if (countInserted == 1) {
+                    int count = checkRegistrationCount(courseuuid, section);
+                    offering.setCurrentEnrollment(count);
+                    Registration registration = new Registration(offering, "NA", "registered");
+                    if (count >= 8) {
                         return new jsonResponse("success", "course added", registration);
+                    } else {
+                        return new jsonResponse("success",
+                                "course added, this course may not run if doesn't meet the minimum required number of students (8)",
+                                registration);
                     }
-
-                } else {
-                    return new jsonResponse("error", "course not found", null);
                 }
+
             } else {
-                return new jsonResponse("error", "offering not found", null);
+                return new jsonResponse("error", "course not found", null);
             }
 
         } catch (SQLException e) {
@@ -344,6 +345,37 @@ public class DataStore implements IDataStore {
             }
         }
         return new jsonResponse("error", "course not added", null);
+    }
+
+    private int checkRegistrationCount(String courseuuid, int section) {
+        Statement stmt = null;
+        java.sql.ResultSet rset = null;
+        try {
+            stmt = getStatement();
+            String strSelect = "select count(*) from registration where course_uuid = '" + courseuuid
+                    + "' and section_number = "
+                    + section + " and status = 'registered' ";
+            rset = stmt.executeQuery(strSelect);
+            if (rset.next()) {
+                return rset.getInt(1);
+            }
+        } catch (SQLException e) {
+            return 0;
+        } catch (ClassNotFoundException e) {
+            return 0;
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rset != null) {
+                    rset.close();
+                }
+            } catch (SQLException e) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     private boolean checkAlreadyRegistered(String studentuuid, String courseuuid, int section) {
@@ -472,16 +504,18 @@ public class DataStore implements IDataStore {
             }
 
             stmt = getStatement();
-            String strSelect = "select * from course where uuid = '" + uuid + "'";
+            String strSelect = "select * from course join department on course.department_uuid = department.uuid where course.uuid = '"
+                    + uuid + "'";
             rset = stmt.executeQuery(strSelect);
             if (rset.next()) {
                 String courseName = rset.getString("name");
                 String courseNumber = rset.getString("number");
-                String courseDepartment = rset.getString("department");
-                Course course = new Course(uuid, courseName, courseNumber, courseDepartment);
+                String courseDepartment = rset.getString("department.name");
+                String deptUuid = rset.getString("department.uuid");
+                Course course = new Course(uuid, courseName, courseNumber, courseDepartment, deptUuid);
                 rset.close();
                 // get prereqs and join with course table to get course name, number, department
-                strSelect = "select * from prerequisite join course on prerequisite.prerequisite_course_uuid = course.uuid where course_uuid = '"
+                strSelect = "select * from prerequisite join course on prerequisite.prerequisite_course_uuid = course.uuid join department on course.department_uuid = department.uuid where prerequisite.course_uuid = '"
                         + uuid + "'";
                 rset = stmt.executeQuery(strSelect);
                 ArrayList<Course> prereqs = new ArrayList<Course>();
@@ -489,8 +523,9 @@ public class DataStore implements IDataStore {
                     String prereqUuid = rset.getString("prerequisite_course_uuid");
                     String prereqName = rset.getString("name");
                     String prereqNumber = rset.getString("number");
-                    String prereqDepartment = rset.getString("department");
-                    Course prereq = new Course(prereqUuid, prereqName, prereqNumber, prereqDepartment);
+                    String prereqDepartment = rset.getString("department.name");
+                    String prereqDeptUuid = rset.getString("department.uuid");
+                    Course prereq = new Course(prereqUuid, prereqName, prereqNumber, prereqDepartment, prereqDeptUuid);
                     prereqs.add(prereq);
                 }
                 course.setPreReqs(prereqs);
@@ -524,15 +559,16 @@ public class DataStore implements IDataStore {
 
         try {
             stmt = getStatement();
-            String strSelect = "select * from course";
+            String strSelect = "select * from course join department on course.department_uuid = department.uuid";
             rset = stmt.executeQuery(strSelect);
             List<Course> courses = new ArrayList<Course>();
             while (rset.next()) {
                 String courseName = rset.getString("name");
                 String courseNumber = rset.getString("number");
-                String courseDepartment = rset.getString("department");
-                String uuid = rset.getString("uuid");
-                Course course = new Course(uuid, courseName, courseNumber, courseDepartment);
+                String courseDepartment = rset.getString("department.name");
+                String courseUuid = rset.getString("course.uuid");
+                String deptUuid = rset.getString("department.uuid");
+                Course course = new Course(courseUuid, courseName, courseNumber, courseDepartment, deptUuid);
                 courses.add(course);
             }
             return new jsonResponse("success", "courses found", courses);
@@ -565,7 +601,7 @@ public class DataStore implements IDataStore {
                 return null;
             }
             stmt = getStatement();
-            String strSelect = "select * from prerequisite join course on prerequisite.prerequisite_course_uuid = course.uuid where course_uuid = '"
+            String strSelect = "select * from prerequisite join course on prerequisite.prerequisite_course_uuid = course.uuid join department on course.department_uuid = department.uuid where prerequisite.course_uuid = '"
                     + courseuuid + "'";
             rset = stmt.executeQuery(strSelect);
             List<Course> prereqs = new ArrayList<Course>();
@@ -573,8 +609,9 @@ public class DataStore implements IDataStore {
                 String prereqUuid = rset.getString("prerequisite_course_uuid");
                 String prereqName = rset.getString("name");
                 String prereqNumber = rset.getString("number");
-                String prereqDepartment = rset.getString("department");
-                Course prereq = new Course(prereqUuid, prereqName, prereqNumber, prereqDepartment);
+                String prereqDepartment = rset.getString("department.name");
+                String prereqDeptUuid = rset.getString("department.uuid");
+                Course prereq = new Course(prereqUuid, prereqName, prereqNumber, prereqDepartment, prereqDeptUuid);
                 prereqs.add(prereq);
 
             }
@@ -609,26 +646,18 @@ public class DataStore implements IDataStore {
                 return null;
             }
             stmt = getStatement();
-            String strSelect = "select * from course where uuid = '" + courseuuid + "'";
+            String strSelect = "select offering.uuid,course_uuid, course.name, number, department.name, section_number, semester, year,(select count(*) from registration where registration.section_number =offering.section_number and registration.course_uuid = offering.course_uuid) as currentEnrollment from offering join course on offering.course_uuid = course.uuid join department on course.department_uuid = department.uuid where offering.course_uuid = '"
+                    + courseuuid + "'";
             rset = stmt.executeQuery(strSelect);
-            if (rset.next()) {
-                String courseName = rset.getString("name");
-                String courseNumber = rset.getString("number");
-                String courseDepartment = rset.getString("department");
-                Course course = new Course(courseuuid, courseName, courseNumber, courseDepartment);
-                strSelect = "select * from offering where course_uuid = '" + courseuuid + "'";
-                rset = stmt.executeQuery(strSelect);
-                List<Offering> offerings = new ArrayList<Offering>();
-                while (rset.next()) {
-                    String offeringUuid = rset.getString("uuid");
-                    String offeringSemester = rset.getString("semester");
-                    int offeringYear = rset.getInt("year");
-                    int section = rset.getInt("section_number");
-                    Offering offering = new Offering(offeringUuid, section, offeringSemester, offeringYear, course);
-                    offerings.add(offering);
-                }
-                return new jsonResponse("success", "offerings found", offerings);
+            List<Offering> offerings = new ArrayList<Offering>();
+            while (rset.next()) {
+                Course course = new Course(rset.getString("course_uuid"), rset.getString("name"),
+                        rset.getString("number"), rset.getString("department.name"), null);
+                Offering offering = new Offering(rset.getString("uuid"), rset.getInt("section_number"),
+                        rset.getString("semester"), rset.getInt("year"), course, rset.getInt("currentEnrollment"));
+                offerings.add(offering);
             }
+            return new jsonResponse("success", "offerings found", offerings);
 
         } catch (SQLException e) {
             return new jsonResponse("error", e.getMessage(), null);
@@ -646,7 +675,6 @@ public class DataStore implements IDataStore {
                 return new jsonResponse("error", e.getMessage(), null);
             }
         }
-        return new jsonResponse("error", "course not found", null);
     }
 
     @Override
@@ -658,16 +686,18 @@ public class DataStore implements IDataStore {
                 return null;
             }
             stmt = getStatement();
-            String strSelect = "select * from course where name like '%" + query + "%' or number like '%" + query
-                    + "%' or department like '%" + query + "%'";
+            String strSelect = "select * from course join department on course.department_uuid = department.uuid  where course.name like '%"
+                    + query + "%' or number like '%" + query
+                    + "%' or department.name like '%" + query + "%'";
             rset = stmt.executeQuery(strSelect);
             List<Course> courses = new ArrayList<Course>();
             while (rset.next()) {
-                String courseName = rset.getString("name");
+                String courseName = rset.getString("course.name");
                 String courseNumber = rset.getString("number");
-                String courseDepartment = rset.getString("department");
-                String uuid = rset.getString("uuid");
-                Course course = new Course(uuid, courseName, courseNumber, courseDepartment);
+                String courseDepartment = rset.getString("department.name");
+                String courseUuid = rset.getString("course.uuid");
+                String deptUuid = rset.getString("department.uuid");
+                Course course = new Course(courseUuid, courseName, courseNumber, courseDepartment, deptUuid);
                 courses.add(course);
             }
             return new jsonResponse("success", "courses found", courses);
