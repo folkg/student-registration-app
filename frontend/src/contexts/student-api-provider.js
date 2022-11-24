@@ -158,11 +158,52 @@ export function StudentAPIProvider(props) {
   }
 
   async function getCoursePrerequisites(id) {
-    //TODO: Implement function body
+    try {
+      const response = await fetch(
+        API_URL + "course/" + id + "/prerequisites",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const body = await response.json();
+      console.log(body);
+      if (body.status === "success") {
+        // Return the result
+        return body.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   async function getCourseOfferings(id) {
-    //TODO: Implement function body
+    try {
+      const response = await fetch(API_URL + "course/" + id + "/offerings", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const body = await response.json();
+      console.log(body);
+      if (body.status === "success") {
+        // Return the result
+        return body.data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   async function searchCourse(query) {
