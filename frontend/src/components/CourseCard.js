@@ -13,21 +13,34 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import Error from "@mui/icons-material/Error";
 import { StudentAPIContext } from "../contexts/student-api-provider";
 
 export default function CourseCard(props) {
-  const { getCoursePrerequisites, getCourseOfferings } =
+  const { getCoursePrerequisites, getCourseOfferings, studentCourses } =
     useContext(StudentAPIContext);
   const { regfx, dropfx } = props;
   const { uuid, courseNumber, courseName, courseDept } = props.course;
   const [preReqs, setPreReqs] = React.useState(null);
   const [offeringList, setOfferingList] = React.useState(null);
-
   const [expanded, setExpanded] = React.useState(false);
   const [loading, setLoading] = useState(false);
 
-  //TODO: Update this to be a boolean or fx that checks uuid vs all enrolled uuids.
-  const isEnrolled = true;
+  // Check the status of a specific offeringUUID
+  const offeringStatus = (uuid) => {
+    // search studentCourses to see if uuid is included
+    const result = studentCourses.find((obj) => obj.theOffering.uuid === uuid);
+    //return the status of the uuid if the student was enrolled
+    return result === undefined ? null : result.theStatus;
+  };
+
+  // Check the status of a specific courseUUID
+  const enrollmentStatus = (uuid) => {
+    const result = studentCourses.find((obj) => obj.theCourse.uuid === uuid);
+    return result === undefined ? null : result.theStatus;
+  };
+  const isEnrolled = enrollmentStatus(uuid);
 
   useEffect(() => {
     // load data on expansion if data has not yet loaded
@@ -91,14 +104,32 @@ export default function CourseCard(props) {
                 {offeringList == null || offeringList.length === 0 ? (
                   <Typography color="text.secondary">None</Typography>
                 ) : (
-                  offeringList.map((o) => (
-                    <ListItem key={o.id}>
-                      <Typography color="text.secondary">
-                        Section {o.section} - {o.semester} {o.year} (
-                        {o.currentEnrollment} students currently enrolled)
-                      </Typography>
-                    </ListItem>
-                  ))
+                  offeringList.map((o) => {
+                    const os = offeringStatus(o.uuid);
+                    const goodStatus = ["completed", "registered"];
+                    const badStatus = ["failed"];
+                    return (
+                      <ListItem key={o.id}>
+                        <Typography color="text.secondary">
+                          Section {o.section} - {o.semester} {o.year} (
+                          {o.currentEnrollment} students currently enrolled)
+                        </Typography>
+                        {goodStatus.includes(os) && (
+                          <CheckCircle color="success" />
+                        )}
+                        {badStatus.includes(os) && <Error color="error" />}
+                        <Typography
+                          color={
+                            goodStatus.includes(os)
+                              ? "success.main"
+                              : "error.main"
+                          }
+                        >
+                          {os}
+                        </Typography>
+                      </ListItem>
+                    );
+                  })
                 )}
               </List>
               <Typography color="text.secondary">Prerequisites:</Typography>
@@ -106,13 +137,31 @@ export default function CourseCard(props) {
                 {preReqs == null || preReqs.length === 0 ? (
                   <Typography color="text.secondary">None</Typography>
                 ) : (
-                  preReqs.map((p) => (
-                    <ListItem key={p.id}>
-                      <Typography color="text.secondary">
-                        {p.courseNumber} - {p.courseName}
-                      </Typography>
-                    </ListItem>
-                  ))
+                  preReqs.map((p) => {
+                    const ps = enrollmentStatus(p.uuid);
+                    const goodStatus = ["completed"];
+                    return (
+                      <ListItem key={p.id}>
+                        <Typography color="text.secondary">
+                          {p.courseNumber} - {p.courseName}
+                        </Typography>
+                        {goodStatus.includes(ps) ? (
+                          <CheckCircle color="success" />
+                        ) : (
+                          <Error color="error" />
+                        )}
+                        <Typography
+                          color={
+                            goodStatus.includes(ps)
+                              ? "success.main"
+                              : "error.main"
+                          }
+                        >
+                          {ps}
+                        </Typography>
+                      </ListItem>
+                    );
+                  })
                 )}
               </List>{" "}
             </>

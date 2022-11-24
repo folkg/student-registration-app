@@ -1,25 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { StudentAPIContext } from "../contexts/student-api-provider";
 import { Container, Typography } from "@mui/material/";
 import DisplayCourses from "./DisplayCourses";
 
 function ViewRegisteredCourses() {
-  const { getStudentCourses, studentInfo } = useContext(StudentAPIContext);
-  const [courseList, setCourseList] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { studentCourses, studentInfo } = useContext(StudentAPIContext);
 
-  // [] option will behave like depreciated componentDidMount and run only once at startup
-  useEffect(() => {
-    //TODO: Are registered courses saved in the proper format in sessionstorage? Can we use that instead of API?
-    async function fetchCourses() {
-      setLoading(true);
-      setCourseList(await getStudentCourses());
-      setLoading(false);
-    }
-
-    fetchCourses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const courseList = studentCourses.map((sc) => sc.theCourse);
 
   return (
     <Container>
@@ -27,7 +14,7 @@ function ViewRegisteredCourses() {
         View Registered Courses for {studentInfo.firstName}{" "}
         {studentInfo.lastName}
       </Typography>
-      <DisplayCourses courses={courseList} loading={loading} />
+      <DisplayCourses courses={courseList} />
     </Container>
   );
 }

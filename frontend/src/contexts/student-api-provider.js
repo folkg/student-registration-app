@@ -10,6 +10,10 @@ export function StudentAPIProvider(props) {
   // Create a token and studentInfo for the user and save in session storage. Default value is null.
   const [token, setToken] = useSessionStorageState("token", null);
   const [studentInfo, setStudentInfo] = useSessionStorageState("student", null);
+  const [studentCourses, setStudentCourses] = useSessionStorageState(
+    "studentCourses",
+    null
+  );
 
   async function login(email, password) {
     // Send credentials to server and save the token from the response
@@ -32,6 +36,7 @@ export function StudentAPIProvider(props) {
         const token = body.data;
         setToken(token);
         getStudent(token);
+        getStudentCourses(token);
         return true;
       } else return body.message;
     } catch (e) {
@@ -96,9 +101,28 @@ export function StudentAPIProvider(props) {
     }
   }
 
-  async function getStudentCourses() {
-    //TODO: Implement function body
-    return null;
+  async function getStudentCourses(id) {
+    try {
+      const response = await fetch(API_URL + "student/" + id + "/courses", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const body = await response.json();
+      console.log(body);
+      if (body.status === "success") {
+        // Set the studentCourses in session storage for use in later API calls
+        setStudentCourses(body.data);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 
   async function addCourse() {
@@ -236,7 +260,7 @@ export function StudentAPIProvider(props) {
         isLoggedIn,
         register,
         studentInfo,
-        getStudentCourses,
+        studentCourses,
         addCourse,
         dropCourse,
         getAllCourses,
