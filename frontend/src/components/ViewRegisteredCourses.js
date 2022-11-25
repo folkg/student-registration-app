@@ -10,9 +10,18 @@ function ViewRegisteredCourses() {
 
   return (
     <Container>
-      <Typography component="h1" variant="h4" align="center">
+      <Typography
+        component="h1"
+        variant="h4"
+        align="center"
+        sx={{ mb: "1rem" }}
+      >
         View Registered Courses for {studentInfo.firstName}{" "}
         {studentInfo.lastName}
+      </Typography>
+      <Typography align="center" sx={{ mb: "1rem" }}>
+        Currently registered for {courseList.length} courses. Students may
+        register for maximum 6 courses.
       </Typography>
       <DisplayCourses courses={courseList} />
     </Container>

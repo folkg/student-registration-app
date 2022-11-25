@@ -66,6 +66,7 @@ export default function CourseCard(props) {
     return <IconButton {...other} />;
   })(({ theme, expand }) => ({
     transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+    marginRight: "auto",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest,
     }),
@@ -88,8 +89,16 @@ export default function CourseCard(props) {
         >
           <ExpandMoreIcon />
         </ExpandMore>
-        {regfx && !isEnrolled && <Button onClick={regfx}>Register</Button>}
-        {dropfx && isEnrolled && <Button onClick={dropfx}>Drop</Button>}
+        {regfx && !isEnrolled && (
+          <Button onClick={regfx} sx={{ marginLeft: "auto" }}>
+            Register
+          </Button>
+        )}
+        {!dropfx && isEnrolled && (
+          <Button onClick={dropfx} sx={{ marginLeft: "auto" }}>
+            Drop
+          </Button>
+        )}
       </CardActions>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
