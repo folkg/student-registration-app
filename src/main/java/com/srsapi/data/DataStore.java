@@ -2,6 +2,7 @@ package com.srsapi.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.mysql.cj.xdevapi.PreparableStatement;
 import com.srsapi.model.*;
 
 @Component("dataStore")
@@ -26,10 +28,20 @@ public class DataStore implements IDataStore {
         return stmt;
     }
 
+    private PreparedStatement getPreparedStatement(String query) throws SQLException, ClassNotFoundException {
+        Connection conn = DriverManager.getConnection(env.getProperty("db-url"), env.getProperty("db-username"),
+                env.getProperty("db-password"));
+        PreparedStatement stmt = conn.prepareStatement(query);
+        return stmt;
+    }
+
     private boolean checkSQLInjection(String str) {
+        // if string null or empty
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
         String regex = "((\\%27)|(\\'))((\\%6F)|o|(\\%4F))((\\%72)|r|(\\%52))";
         return str.matches(regex);
-
     }
 
     public jsonResponse getStudent(String uuid) {
@@ -241,10 +253,11 @@ public class DataStore implements IDataStore {
                 int sectionNumber = rset.getInt("section_number");
                 String semester = rset.getString("semester");
                 int year = rset.getInt("year");
+                String offeringUuid = rset.getString("offering.uuid");
                 String status = rset.getString("status");
                 String grade = rset.getString("grade");
                 Course course = new Course(courseUuid, courseName, courseNumber, courseDepartment, deptUuid);
-                Offering offering = new Offering("", sectionNumber, semester, year, course, 0);
+                Offering offering = new Offering(offeringUuid, sectionNumber, semester, year, course, 0);
                 Registration reg = new Registration(offering, grade, status);
                 courses.add(reg);
             }
@@ -274,7 +287,7 @@ public class DataStore implements IDataStore {
     }
 
     @Override
-    public jsonResponse addCourse(String studentuuid, String courseuuid, int section) {
+    public jsonResponse registerCourse(String studentuuid, String courseuuid, int section) {
 
         Statement stmt = null;
         java.sql.ResultSet rset = null;
@@ -559,7 +572,7 @@ public class DataStore implements IDataStore {
 
         try {
             stmt = getStatement();
-            String strSelect = "select * from course join department on course.department_uuid = department.uuid";
+            String strSelect = "select * from course join department on course.department_uuid = department.uuid order by course.name, course.number";
             rset = stmt.executeQuery(strSelect);
             List<Course> courses = new ArrayList<Course>();
             while (rset.next()) {
@@ -688,7 +701,7 @@ public class DataStore implements IDataStore {
             stmt = getStatement();
             String strSelect = "select * from course join department on course.department_uuid = department.uuid  where course.name like '%"
                     + query + "%' or number like '%" + query
-                    + "%' or department.name like '%" + query + "%'";
+                    + "%' or department.name like '%" + query + "%' order by course.name, course.number";
             rset = stmt.executeQuery(strSelect);
             List<Course> courses = new ArrayList<Course>();
             while (rset.next()) {
@@ -713,6 +726,287 @@ public class DataStore implements IDataStore {
                 }
                 if (rset != null) {
                     rset.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse addCourse(Course course) {
+
+        Statement stmt = null;
+        try {
+            if (checkSQLInjection(course.getUuid()) || checkSQLInjection(course.getCourseName())
+                    || checkSQLInjection(course.getCourseNumber()) || checkSQLInjection(course.getCourseDept())) {
+                return null;
+            }
+            stmt = getStatement();
+            course.setUuid(UUID.randomUUID().toString());
+            String strSelect = "insert into course (uuid,name,number,department_uuid) values ('"
+                    + course.getUuid() + "','" + course.getCourseName() + "','" + course.getCourseNumber() + "','"
+                    + course.getDeptUuid() + "')";
+            stmt.executeUpdate(strSelect);
+            strSelect = "insert into prerequisite (uuid,course_uuid,prerequisite_course_uuid) values ";
+            for (Course prereq : course.getPreReqs()) {
+                strSelect += "('" + UUID.randomUUID().toString() + "','" + course.getUuid() + "','"
+                        + prereq.getUuid() + "'),";
+
+            }
+            strSelect = strSelect.substring(0, strSelect.length() - 1);
+            stmt.executeUpdate(strSelect);
+
+            return new jsonResponse("success", "course added", null);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse addOffering(Offering offering) {
+
+        Statement stmt = null;
+        try {
+            if (checkSQLInjection(offering.getTheCourse().getUuid()) || checkSQLInjection(offering.getSemester())) {
+                return null;
+            }
+            stmt = getStatement();
+            offering.setUuid(UUID.randomUUID().toString());
+            String strSelect = "insert into offering (uuid,course_uuid,section_number,semester,year) values ('"
+                    + offering.getUuid() + "','" + offering.getTheCourse().getUuid() + "',"
+                    + offering.getSection()
+                    + ",'" + offering.getSemester() + "'," + offering.getYear() + ")";
+            stmt.executeUpdate(strSelect);
+            return new jsonResponse("success", "offering added", null);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse updateCourse(Course course) {
+
+        PreparedStatement stmt = null;
+        try {
+            if (checkSQLInjection(course.getUuid()) || checkSQLInjection(course.getCourseName())
+                    || checkSQLInjection(course.getCourseNumber()) || checkSQLInjection(course.getCourseDept())) {
+                return null;
+            }
+
+            String strSelect = "update course set name = '" + course.getCourseName() + "', number = '"
+                    + course.getCourseNumber() + "' where uuid = '" + course.getUuid() + "'";
+            stmt = getPreparedStatement(strSelect);
+            stmt.executeUpdate();
+            return new jsonResponse("success", "course updated", null);
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse updateOffering(Offering offering) {
+        PreparedStatement stmt = null;
+        try {
+            if (checkSQLInjection(offering.getTheCourse().getUuid()) || checkSQLInjection(offering.getSemester())) {
+                return null;
+            }
+            String strSelect = "update offering set section_number = " + offering.getSection() + ", semester = '"
+                    + offering.getSemester()
+                    + "', year = " + offering.getYear() + " where uuid = '" + offering.getUuid() + "'";
+            stmt = getPreparedStatement(strSelect);
+            stmt.executeUpdate();
+            return new jsonResponse("success", "offering updated", null);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse deleteCourse(String uuid) {
+        Statement stmt = null;
+        try {
+            if (checkSQLInjection(uuid)) {
+                return null;
+            }
+            stmt = getStatement();
+            // delete the course prerequisites first
+            String strSelect = "delete from prerequisite where course_uuid = '" + uuid
+                    + "' or prerequisite_course_uuid = '"
+                    + uuid + "'";
+            stmt.executeUpdate(strSelect);
+            // delete the course
+            strSelect = "delete from course where uuid = '" + uuid + "'";
+            int result = stmt.executeUpdate(strSelect);
+            if (result == 0) {
+                return new jsonResponse("error", "course not found", null);
+            }
+            return new jsonResponse("success", "course deleted", null);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse deleteOffering(String uuid) {
+        Statement stmt = null;
+        try {
+            if (checkSQLInjection(uuid)) {
+                return null;
+            }
+            stmt = getStatement();
+            String strSelect = "delete from offering where uuid = '" + uuid + "'";
+            int result = stmt.executeUpdate(strSelect);
+            if (result == 0) {
+                return new jsonResponse("error", "offering not found", null);
+            }
+            return new jsonResponse("success", "offering deleted", null);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse getOffering(String id) {
+        Statement stmt = null;
+        java.sql.ResultSet rset = null;
+        try {
+            if (checkSQLInjection(id)) {
+                return null;
+            }
+            stmt = getStatement();
+            String strSelect = "select * from offering join course on offering.course_uuid = course.uuid where offering.uuid = '"
+                    + id + "'";
+            rset = stmt.executeQuery(strSelect);
+            Offering offering = new Offering();
+            while (rset.next()) {
+                offering.setUuid(rset.getString("uuid"));
+                offering.setSection(rset.getInt("section_number"));
+                offering.setSemester(rset.getString("semester"));
+                offering.setYear(rset.getInt("year"));
+                Course course = new Course();
+                course.setUuid(rset.getString("course.uuid"));
+                course.setCourseName(rset.getString("course.name"));
+                course.setCourseNumber(rset.getString("course.number"));
+                course.setCourseDept(rset.getString("department_uuid"));
+                offering.setTheCourse(course);
+
+            }
+            return new jsonResponse("success", "offering found", offering);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                return new jsonResponse("error", e.getMessage(), null);
+            }
+        }
+    }
+
+    @Override
+    public jsonResponse getAllOfferings() {
+        Statement stmt = null;
+        java.sql.ResultSet rset = null;
+
+        try {
+            stmt = getStatement();
+            String strSelect = "select * from offering join course on offering.course_uuid = course.uuid";
+            rset = stmt.executeQuery(strSelect);
+            ArrayList<Offering> offerings = new ArrayList<Offering>();
+            while (rset.next()) {
+                Offering offering = new Offering();
+                offering.setUuid(rset.getString("uuid"));
+                offering.setSection(rset.getInt("section_number"));
+                offering.setSemester(rset.getString("semester"));
+                offering.setYear(rset.getInt("year"));
+                Course course = new Course();
+                course.setUuid(rset.getString("course.uuid"));
+                course.setCourseName(rset.getString("course.name"));
+                course.setCourseNumber(rset.getString("course.number"));
+                offering.setTheCourse(course);
+                offerings.add(offering);
+            }
+            return new jsonResponse("success", "offerings found", offerings);
+
+        } catch (SQLException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } catch (ClassNotFoundException e) {
+            return new jsonResponse("error", e.getMessage(), null);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
                 }
             } catch (SQLException e) {
                 return new jsonResponse("error", e.getMessage(), null);
