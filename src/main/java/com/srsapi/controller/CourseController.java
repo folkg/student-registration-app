@@ -1,6 +1,6 @@
 package com.srsapi.controller;
 
-import com.srsapi.dao.IDataStore;
+import com.srsapi.data.IDataStore;
 import com.srsapi.model.jsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +32,12 @@ public class CourseController {
         return dataStore.getCourseOfferings(id);
     }
 
+    // search course
+    @GetMapping(value = "/search")
+    public jsonResponse searchCourse(@RequestParam("query") String query) {
+        return dataStore.searchCourse(query);
+    }
+
     /*
      * documentation query this endpoint conntroller methods
      * 
@@ -54,11 +60,43 @@ public class CourseController {
      * 
      * 3- to get course prerequisites by id
      * request type: GET request url: http://localhost:8080/course/1/prerequisites
-     * response e.g. : {"status":"success","message":"course prerequisites found","data":[]}
+     * response e.g. :
+     * {"status":"success","message":"course prerequisites found","data":[]}
      * 
      * 4- to get course offerings by id
      * request type: GET request url: http://localhost:8080/course/1/offerings
-     * response e.g. : {"status":"success","message":"course offerings found","data":[]}
+     * response e.g. :{
+     * "status": "success",
+     * "message": "offerings found",
+     * "data": [
+     * {
+     * "uuid": "1",
+     * "section": 1,
+     * "semester": "Fall",
+     * "currentEnrollment": 3,
+     * "year": 2018,
+     * "theCourse": {
+     * "uuid": "1",
+     * "courseName": "Introduction to Computer Science",
+     * "courseNumber": "CS 101",
+     * "courseDept": "Computer Science",
+     * "preReqs": [],
+     * "offeringList": []
+     * }
+     * }
+     * ]
+     * }
+     * 
+     * 5- to search course
+     * request type: GET request url: http://localhost:8080/course/search?query=CS
+     * response e.g. :
+     * {"status":"success","message":"courses found","data":[{"uuid":"1",
+     * "courseName":"Introduction to Computer Science","courseNumber":"CS 101"
+     * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]},{"uuid":"2",
+     * "courseName":"Introduction to Computer Science II","courseNumber":"CS 102"
+     * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]},{"uuid":"3",
+     * "courseName":"Introduction to Computer Science III","courseNumber":"CS 103"
+     * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]}]}
      */
 
 }

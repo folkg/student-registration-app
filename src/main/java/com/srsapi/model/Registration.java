@@ -1,14 +1,12 @@
 package com.srsapi.model;
 
 public class Registration {
-    private String uuid;
     private Offering theOffering;
     private String theGrade;
     private String theStatus;
 
 
-    public Registration(String uuid, Offering theOffering, String theGrade, String theStatus) {
-        this.uuid = uuid;
+    public Registration(Offering theOffering, String theGrade, String theStatus) {
         this.theOffering = theOffering;
         this.theGrade = theGrade;
         this.theStatus = theStatus;
@@ -41,14 +39,7 @@ public class Registration {
         this.theStatus = theStatus;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
+   
 
 
 

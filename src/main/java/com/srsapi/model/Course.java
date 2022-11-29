@@ -2,21 +2,23 @@ package com.srsapi.model;
 
 import java.util.ArrayList;
 
+
 public class Course {
 
     private String uuid;
     private String courseName;
     private String courseNumber;
     private String courseDept;
-
+    private String deptUuid;
     private ArrayList<Course> preReqs;
     private ArrayList<Offering> offeringList;
 
-    public Course( String uuid,String courseName, String courseNumber, String courseDept) {
+    public Course( String uuid,String courseName, String courseNumber, String courseDept, String deptUuid) {
         this.uuid = uuid;
         this.courseName = courseName;
         this.courseNumber = courseNumber;
         this.courseDept = courseDept;
+        this.deptUuid = deptUuid;
         preReqs = new ArrayList<>();
         offeringList = new ArrayList<>();
     }
@@ -82,6 +84,15 @@ public class Course {
     public ArrayList<Offering> getOfferingList() {
         return offeringList;
     }
+
+    public String getDeptUuid() {
+        return deptUuid;
+    }
+
+    public void setDeptUuid(String deptUuid) {
+        this.deptUuid = deptUuid;
+    }
+    
 
     
 }

@@ -5,18 +5,17 @@ public class Offering {
     private String uuid;
     private int section;
     private String semester;
-    private int capacity;
+    private int currentEnrollment;
     private int year;
     private Course theCourse;
 
-    
-
-    public Offering( String uuid, int section, String semester, int year, Course theCourse) {
+    public Offering(String uuid, int section, String semester, int year, Course theCourse, int currentEnrollment) {
         this.uuid = uuid;
         this.section = section;
         this.semester = semester;
         this.year = year;
         this.theCourse = theCourse;
+        this.currentEnrollment = currentEnrollment;
     }
 
     public String getUuid() {
@@ -30,7 +29,7 @@ public class Offering {
     public int getSection() {
         return section;
     }
-   
+
     public void setSection(int section) {
         this.section = section;
     }
@@ -51,7 +50,6 @@ public class Offering {
         this.semester = semester;
     }
 
-
     public int getYear() {
         return year;
     }
@@ -60,5 +58,12 @@ public class Offering {
         this.year = year;
     }
 
-   
+    public int getCurrentEnrollment() {
+        return currentEnrollment;
+    }
+
+    public void setCurrentEnrollment(int currentEnrollment) {
+        this.currentEnrollment = currentEnrollment;
+    }
+
 }
