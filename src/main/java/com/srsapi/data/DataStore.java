@@ -437,7 +437,7 @@ public class DataStore implements IDataStore {
             }
 
             stmt = getStatement();
-            String strSelect = "select * from registration where student_uuid = '" + studentuuid + "'";
+            String strSelect = "select * from registration where student_uuid = '" + studentuuid + "' and status = 'registered'";
             rset = stmt.executeQuery(strSelect);
             int count = 0;
             while (rset.next()) {

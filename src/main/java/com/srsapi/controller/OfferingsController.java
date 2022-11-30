@@ -55,7 +55,7 @@ public class OfferingsController {
      * 2- to get all offerings
      * request type: GET request url: http://localhost:8080/offerings/
      * response e.g. :
-
+     * 
      * 
      * 3- to get offering course
      * request type: GET request url: http://localhost:8080/offerings/{id}/course
@@ -63,7 +63,15 @@ public class OfferingsController {
      * 
      * 4- to add offering
      * request type: POST request url: http://localhost:8080/offerings/add
-     * request body: { "courseId":"1c6ca9cc-6232-4468-8737-e177469fac9f", "semester":"Fall", "year":2020 }
+     * request body: {
+     * "section": "1",
+     * "semester": "Fall",
+     * "year": 2023,
+     * "theCourse":{
+     * "uuid":"9"
+     * 
+     * }
+     * }
      * 
      */
 
