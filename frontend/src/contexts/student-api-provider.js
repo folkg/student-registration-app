@@ -45,6 +45,12 @@ export function StudentAPIProvider(props) {
     }
   }
 
+  function logout() {
+    setToken(null);
+    setStudentInfo(null);
+    setStudentCourses(null);
+  }
+
   const isLoggedIn = () => {
     return token != null;
   };
@@ -78,7 +84,6 @@ export function StudentAPIProvider(props) {
   async function getStudent(id) {
     // Send studentID to server and save student info from the response
     try {
-      console.log(token);
       const response = await fetch(API_URL + "student/" + id, {
         method: "GET",
         headers: {
@@ -257,6 +262,7 @@ export function StudentAPIProvider(props) {
     <StudentAPIContext.Provider
       value={{
         login,
+        logout,
         isLoggedIn,
         register,
         studentInfo,

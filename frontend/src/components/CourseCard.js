@@ -118,7 +118,7 @@ export default function CourseCard(props) {
                     const goodStatus = ["completed", "registered"];
                     const badStatus = ["failed"];
                     return (
-                      <ListItem key={o.id}>
+                      <ListItem key={o.uuid}>
                         <Typography color="text.secondary">
                           Section {o.section} - {o.semester} {o.year} (
                           {o.currentEnrollment} students currently enrolled)
@@ -150,7 +150,7 @@ export default function CourseCard(props) {
                     const ps = enrollmentStatus(p.uuid);
                     const goodStatus = ["completed"];
                     return (
-                      <ListItem key={p.id}>
+                      <ListItem key={p.uuid}>
                         <Typography color="text.secondary">
                           {p.courseNumber} - {p.courseName}
                         </Typography>

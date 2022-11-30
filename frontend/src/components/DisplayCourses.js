@@ -27,7 +27,7 @@ function DisplayCourses(props) {
           </Paper>
         ) : (
           courses.map((c) => (
-            <React.Fragment key={c.id}>
+            <React.Fragment key={c.uuid}>
               <CourseCard course={c} />
             </React.Fragment>
           ))
