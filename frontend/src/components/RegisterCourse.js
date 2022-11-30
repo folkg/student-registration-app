@@ -74,9 +74,9 @@ function RegisterCourse() {
 
   async function handleSelectionClose(newValue) {
     setSelectionDialogOpen(false);
-    setNotificationDialogOpen(true);
 
     if (newValue) {
+      setNotificationDialogOpen(true);
       setRegistrationSection(newValue);
     }
   }

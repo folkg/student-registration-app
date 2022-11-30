@@ -1,8 +1,8 @@
 import { createContext } from "react";
 import { useSessionStorageState } from "../hooks/useSessionStorageState";
 
-// const API_URL = "http://localhost:8080/";
-const API_URL = "https://gs-spring-boot-docker-iigfnkziqq-uc.a.run.app/";
+const API_URL = "http://localhost:8080/";
+// const API_URL = "https://gs-spring-boot-docker-iigfnkziqq-uc.a.run.app/";
 
 export const StudentAPIContext = createContext();
 
