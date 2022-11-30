@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CreateRoutes from "./CreateRoutes";
 import { StudentAPIProvider } from "../contexts/student-api-provider";
 import { DarkModeProvider } from "../contexts/theme.context";
@@ -7,6 +8,10 @@ import NavBar from "./NavBar";
 //TODO: Change the name of the document in the browser bar
 
 function App() {
+  useEffect(() => {
+    document.title = "Student Registration";
+  }, []);
+
   const routes = CreateRoutes();
   return (
     <DarkModeProvider>

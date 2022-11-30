@@ -15,7 +15,7 @@ function DisplayCourses(props) {
         alignItems: "center",
       }}
     >
-      <Box sx={{ maxWidth: 600, display: "flex", flexDirection: "column" }}>
+      <Box sx={{ width: 600, display: "flex", flexDirection: "column" }}>
         {loading ? (
           <Paper sx={{ p: "1rem" }} elevation={2} align="center">
             <Typography>Loading...</Typography>
