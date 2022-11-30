@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
+  Box,
   Card,
   CardActions,
   CardContent,
@@ -20,7 +21,7 @@ import { StudentAPIContext } from "../contexts/student-api-provider";
 export default function CourseCard(props) {
   const { getCoursePrerequisites, getCourseOfferings, studentCourses } =
     useContext(StudentAPIContext);
-  const { regfx, dropfx } = props;
+  const { handleRegister, handleDrop } = props;
   const { uuid, courseNumber, courseName, courseDept } = props.course;
   const [preReqs, setPreReqs] = React.useState(null);
   const [offeringList, setOfferingList] = React.useState(null);
@@ -40,7 +41,7 @@ export default function CourseCard(props) {
     const result = studentCourses.find((obj) => obj.theCourse.uuid === uuid);
     return result === undefined ? null : result.theStatus;
   };
-  const isEnrolled = enrollmentStatus(uuid);
+  const isEnrolled = enrollmentStatus(uuid) != null;
 
   useEffect(() => {
     // load data on expansion if data has not yet loaded
@@ -66,7 +67,7 @@ export default function CourseCard(props) {
     return <IconButton {...other} />;
   })(({ theme, expand }) => ({
     transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-    marginRight: "auto",
+    marginLeft: "auto",
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest,
     }),
@@ -79,8 +80,31 @@ export default function CourseCard(props) {
         <Typography variant="h5" component="div">
           {courseNumber} - {courseName}
         </Typography>
+        {isEnrolled && (
+          <Typography color="text.secondary">
+            Status: {enrollmentStatus(uuid)}
+          </Typography>
+        )}
       </CardContent>
       <CardActions>
+        <Box sx={{ marginRight: "auto" }}>
+          {handleRegister && (
+            <Button
+              onClick={() => handleRegister(uuid, courseNumber)}
+              disabled={isEnrolled}
+            >
+              Register
+            </Button>
+          )}
+          {handleDrop && (
+            <Button
+              onClick={() => handleDrop(uuid, courseNumber)}
+              disabled={!(enrollmentStatus(uuid) === "registered")}
+            >
+              Drop
+            </Button>
+          )}
+        </Box>
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
@@ -89,16 +113,6 @@ export default function CourseCard(props) {
         >
           <ExpandMoreIcon />
         </ExpandMore>
-        {regfx && !isEnrolled && (
-          <Button onClick={regfx} sx={{ marginLeft: "auto" }}>
-            Register
-          </Button>
-        )}
-        {!dropfx && isEnrolled && (
-          <Button onClick={dropfx} sx={{ marginLeft: "auto" }}>
-            Drop
-          </Button>
-        )}
       </CardActions>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
