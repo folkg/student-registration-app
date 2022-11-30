@@ -1,8 +1,8 @@
 import { createContext } from "react";
 import { useSessionStorageState } from "../hooks/useSessionStorageState";
 
-// const API_URL = "http://localhost:8080/";
-const API_URL = "https://gs-spring-boot-docker-iigfnkziqq-uc.a.run.app/";
+const API_URL = "http://localhost:8080/";
+// const API_URL = "https://gs-spring-boot-docker-iigfnkziqq-uc.a.run.app/";
 
 export const StudentAPIContext = createContext();
 
@@ -45,6 +45,12 @@ export function StudentAPIProvider(props) {
     }
   }
 
+  function logout() {
+    setToken(null);
+    setStudentInfo(null);
+    setStudentCourses(null);
+  }
+
   const isLoggedIn = () => {
     return token != null;
   };
@@ -78,7 +84,6 @@ export function StudentAPIProvider(props) {
   async function getStudent(id) {
     // Send studentID to server and save student info from the response
     try {
-      console.log(token);
       const response = await fetch(API_URL + "student/" + id, {
         method: "GET",
         headers: {
@@ -125,14 +130,52 @@ export function StudentAPIProvider(props) {
     }
   }
 
-  async function addCourse() {
-    //TODO: Implement function body
-    return null;
+  async function registerCourse(courseId, section) {
+    try {
+      const response = await fetch(
+        API_URL + "student/" + token + "/course/" + courseId + "/" + section,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const body = await response.json();
+      if (body.status === "success") {
+        // update the local cache of student courses
+        getStudentCourses(token);
+      }
+      return body;
+    } catch (e) {
+      console.log(e);
+      return "Server communication error";
+    }
   }
 
-  async function dropCourse() {
-    //TODO: Implement function body
-    return null;
+  async function dropCourse(courseId, section) {
+    try {
+      console.log(courseId);
+      console.log(section);
+      const response = await fetch(
+        API_URL + "student/" + token + "/course/" + courseId + "/" + section,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const body = await response.json();
+      if (body.status === "success") {
+        // update the local cache of student courses
+        getStudentCourses(token);
+      }
+      return body;
+    } catch (e) {
+      console.log(e);
+      return "Server communication error";
+    }
   }
 
   async function getAllCourses() {
@@ -257,11 +300,12 @@ export function StudentAPIProvider(props) {
     <StudentAPIContext.Provider
       value={{
         login,
+        logout,
         isLoggedIn,
         register,
         studentInfo,
         studentCourses,
-        addCourse,
+        registerCourse,
         dropCourse,
         getAllCourses,
         getCourse,

@@ -8,6 +8,8 @@ import Dashboard from "./Dashboard";
 import SearchCourses from "./SearchCourses";
 import ViewAllCourses from "./ViewAllCourses";
 import ViewRegisteredCourses from "./ViewRegisteredCourses";
+import RegisterCourse from "./RegisterCourse";
+import DropCourse from "./DropCourse";
 
 // check to ensure we are logged in before navigating to a private page
 function PrivateRoute({ children }) {
@@ -20,8 +22,6 @@ function AnonymousRoute({ children }) {
   const { isLoggedIn } = useContext(StudentAPIContext);
   return isLoggedIn() ? <Navigate to="/" /> : children;
 }
-
-//TODO: Add route to register and drop courses
 
 function CreateRoutes() {
   return (
@@ -77,6 +77,24 @@ function CreateRoutes() {
         element={
           <PrivateRoute>
             <SearchCourses />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        exact
+        path="/registercourse"
+        element={
+          <PrivateRoute>
+            <RegisterCourse />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        exact
+        path="/dropcourse"
+        element={
+          <PrivateRoute>
+            <DropCourse />
           </PrivateRoute>
         }
       />

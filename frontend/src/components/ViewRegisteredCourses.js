@@ -6,7 +6,12 @@ import DisplayCourses from "./DisplayCourses";
 function ViewRegisteredCourses() {
   const { studentCourses, studentInfo } = useContext(StudentAPIContext);
 
-  const courseList = studentCourses.map((sc) => sc.theCourse);
+  const registeredCourses = studentCourses
+    .filter((sc) => sc.theStatus === "registered")
+    .map((sc) => sc.theCourse);
+  const completedCourses = studentCourses
+    .filter((sc) => sc.theStatus === "completed")
+    .map((sc) => sc.theCourse);
 
   return (
     <Container>
@@ -19,11 +24,31 @@ function ViewRegisteredCourses() {
         View Registered Courses for {studentInfo.firstName}{" "}
         {studentInfo.lastName}
       </Typography>
-      <Typography align="center" sx={{ mb: "1rem" }}>
-        Currently registered for {courseList.length} courses. Students may
-        register for maximum 6 courses.
+      <Typography
+        component="h1"
+        variant="h5"
+        align="center"
+        sx={{ mb: "1rem" }}
+      >
+        Currently Registered Courses
       </Typography>
-      <DisplayCourses courses={courseList} />
+      <Typography align="center" sx={{ mb: "1rem" }}>
+        Currently registered for {registeredCourses.length} courses. Students
+        may register for maximum 6 courses.
+      </Typography>
+      <DisplayCourses courses={registeredCourses} />
+      <Typography
+        component="h1"
+        variant="h5"
+        align="center"
+        sx={{ mb: "1rem" }}
+      >
+        Copmleted Courses
+      </Typography>
+      <Typography align="center" sx={{ mb: "1rem" }}>
+        Copmleted {completedCourses.length} courses.
+      </Typography>
+      <DisplayCourses courses={completedCourses} />
     </Container>
   );
 }
