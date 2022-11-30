@@ -1,16 +1,28 @@
-drop table if exists offering;
-drop table if exists prerequisite;
-drop table if exists registration;
-drop table if exists course;
+-- Team Members:
+-- Mohammed Alhajjaj
+-- Stephen Thistle
+-- Graeme Folk
 
+DROP DATABASE IF EXISTS studentregistration;
+CREATE DATABASE studentregistration; 
+USE studentregistration;
+
+drop table if exists student;
+drop table if exists course;
+drop table if exists registration;
+drop table if exists prerequisite;
+drop table if exists offering;
+drop table if exists department;
+drop table if exists admin;
 
 create table if not exists student (
     uuid varchar(36) not null,
     first_name varchar(255) not null,
-    last_name varchar(255) not null,
+    last_name varchar(255) not null unique,
     email varchar(255) not null,
     primary key (uuid)
 );
+
 create table if not exists course (
     uuid varchar(36) not null,
     name varchar(255) not null,
@@ -60,11 +72,9 @@ create table if not exists admin (
     uuid varchar(36) not null,
     first_name varchar(255) not null,
     last_name varchar(255) not null,
-    email varchar(255) not null,
+    email varchar(255) not null unique,
     password varchar(255) not null,
     department_uuid varchar(36) not null,
     primary key (uuid),
     foreign key (department_uuid) references department (uuid)
 );
-
-
