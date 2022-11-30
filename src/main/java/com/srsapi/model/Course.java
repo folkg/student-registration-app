@@ -23,6 +23,9 @@ public class Course {
         offeringList = new ArrayList<>();
     }
 
+    public Course() {
+    }
+
     public String getUuid() {
         return uuid;
     }

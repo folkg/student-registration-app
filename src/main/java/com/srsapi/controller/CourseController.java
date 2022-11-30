@@ -1,6 +1,7 @@
 package com.srsapi.controller;
 
 import com.srsapi.data.IDataStore;
+import com.srsapi.model.Course;
 import com.srsapi.model.jsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,21 @@ public class CourseController {
     @GetMapping(value = "/search")
     public jsonResponse searchCourse(@RequestParam("query") String query) {
         return dataStore.searchCourse(query);
+    }
+
+    @PostMapping(value = "/add")
+    public jsonResponse addCourse(@RequestBody Course course) {
+        return dataStore.addCourse(course);
+    }
+
+    @PutMapping(value = "/update")
+    public jsonResponse updateCourse(@RequestBody Course course) {
+        return dataStore.updateCourse(course);
+    }
+
+    @DeleteMapping(value = "/{id}/delete")
+    public jsonResponse deleteCourse(@PathVariable("id") String id) {
+        return dataStore.deleteCourse(id);
     }
 
     /*
@@ -97,6 +113,42 @@ public class CourseController {
      * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]},{"uuid":"3",
      * "courseName":"Introduction to Computer Science III","courseNumber":"CS 103"
      * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]}]}
+     * 
+     * 
+     * 6- to add course
+     * request type: POST request url: http://localhost:8080/course/add
+     * request body:
+     * {"courseName":"Introduction to Computer Science IV","courseNumber":"CS 104"
+     * ,"courseDept":"Computer Science","preReqs":[{ "uuid": "1", "courseName":
+     * "Introduction to Computer Science", "courseNumber": "CS 101", "courseDept":
+     * "Computer Science"}]}
+     * 
+     * response e.g. :
+     * {"status":"success","message":"course added","data":{"uuid":"4",
+     * "courseName":"Introduction to Computer Science IV","courseNumber":"CS 104"
+     * ,"courseDept":"Computer Science","preReqs":[{"uuid":"1",
+     * "courseName":"Introduction to Computer Science","courseNumber":"CS 101"
+     * ,"courseDept":"Computer Science","preReqs":[],"offeringList":[]}],
+     * "offeringList":[]}}
+     * 
+     * 
+     * 7- to update course
+     * request type: PUT request url: http://localhost:8080/course/4/update
+     * request body: {
+     * "uuid": "9",
+     * "courseName": "Advanced Desgin Software Engineering",
+     * "courseNumber": "ENSF607",
+     * "courseDept": "Software Engineering",
+     * "deptUuid": "5"
+     * }
+     * 
+     * 8- to delete course
+     * request type: DELETE request url: http://localhost:8080/course/4/delete
+     * response e.g. : {"status":"success","message":"course deleted","data":null}
+     * 
+     * 
+     * 
+     * 
      */
 
 }

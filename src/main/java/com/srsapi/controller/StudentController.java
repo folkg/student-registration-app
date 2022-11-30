@@ -38,7 +38,7 @@ public class StudentController {
     @PostMapping(value = "/{id}/course/{courseId}/{section}")
     public jsonResponse addCourse(@PathVariable("id") String id, @PathVariable("courseId") String courseId,
             @PathVariable("section") int section) {
-        return dataStore.addCourse(id, courseId, section);
+        return dataStore.registerCourse(id, courseId, section);
     }
 
     @DeleteMapping(value = "/{id}/course/{courseId}/{section}")

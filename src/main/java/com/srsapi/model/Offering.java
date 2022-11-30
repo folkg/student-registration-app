@@ -18,6 +18,9 @@ public class Offering {
         this.currentEnrollment = currentEnrollment;
     }
 
+    public Offering() {
+    }
+
     public String getUuid() {
         return uuid;
     }
