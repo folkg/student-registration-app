@@ -62,6 +62,7 @@ export default function Dashboard() {
         </Button>
         <Button
           variant="contained"
+          href="/registercourse"
           disabled={!studentInfo}
           fullWidth
           sx={{ margin: 1 }}
@@ -70,6 +71,7 @@ export default function Dashboard() {
         </Button>
         <Button
           variant="contained"
+          href="/dropcourse"
           disabled={!studentInfo}
           fullWidth
           sx={{ margin: 1 }}

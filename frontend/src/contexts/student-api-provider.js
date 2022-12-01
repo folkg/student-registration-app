@@ -30,7 +30,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Set the token in session storage for use in later API calls
         const token = body.data;
@@ -43,6 +42,12 @@ export function StudentAPIProvider(props) {
       console.log(e);
       return "Server communication error";
     }
+  }
+
+  function logout() {
+    setToken(null);
+    setStudentInfo(null);
+    setStudentCourses(null);
   }
 
   const isLoggedIn = () => {
@@ -65,7 +70,6 @@ export function StudentAPIProvider(props) {
         }),
       });
       const body = await response.json();
-      console.log(body);
 
       if (body.status === "success") return true;
       else return body.message;
@@ -78,7 +82,6 @@ export function StudentAPIProvider(props) {
   async function getStudent(id) {
     // Send studentID to server and save student info from the response
     try {
-      console.log(token);
       const response = await fetch(API_URL + "student/" + id, {
         method: "GET",
         headers: {
@@ -87,7 +90,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Set the studentInfo in session storage for use in later API calls
         setStudentInfo(body.data);
@@ -111,7 +113,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Set the studentCourses in session storage for use in later API calls
         setStudentCourses(body.data);
@@ -125,14 +126,52 @@ export function StudentAPIProvider(props) {
     }
   }
 
-  async function addCourse() {
-    //TODO: Implement function body
-    return null;
+  async function registerCourse(courseId, section) {
+    try {
+      const response = await fetch(
+        API_URL + "student/" + token + "/course/" + courseId + "/" + section,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const body = await response.json();
+      if (body.status === "success") {
+        // update the local cache of student courses
+        getStudentCourses(token);
+      }
+      return body;
+    } catch (e) {
+      console.log(e);
+      return "Server communication error";
+    }
   }
 
-  async function dropCourse() {
-    //TODO: Implement function body
-    return null;
+  async function dropCourse(courseId, section) {
+    try {
+      console.log(courseId);
+      console.log(section);
+      const response = await fetch(
+        API_URL + "student/" + token + "/course/" + courseId + "/" + section,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const body = await response.json();
+      if (body.status === "success") {
+        // update the local cache of student courses
+        getStudentCourses(token);
+      }
+      return body;
+    } catch (e) {
+      console.log(e);
+      return "Server communication error";
+    }
   }
 
   async function getAllCourses() {
@@ -145,7 +184,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -168,7 +206,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -194,7 +231,6 @@ export function StudentAPIProvider(props) {
       );
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -217,7 +253,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -240,7 +275,6 @@ export function StudentAPIProvider(props) {
       });
 
       const body = await response.json();
-      console.log(body);
       if (body.status === "success") {
         // Return the result
         return body.data;
@@ -257,11 +291,12 @@ export function StudentAPIProvider(props) {
     <StudentAPIContext.Provider
       value={{
         login,
+        logout,
         isLoggedIn,
         register,
         studentInfo,
         studentCourses,
-        addCourse,
+        registerCourse,
         dropCourse,
         getAllCourses,
         getCourse,
