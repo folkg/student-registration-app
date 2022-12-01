@@ -15,13 +15,13 @@ NOT NULL constraints have been placed on all table values, and UNIQUE constraint
 Primary keys for msot tables are a UUID.
 */
 
--- describe student;
--- describe course;
--- describe registration;
--- describe prerequisite;
--- describe offering;
--- describe department;
--- describe admin;
+describe student;
+describe course;
+describe registration;
+describe prerequisite;
+describe offering;
+describe department;
+describe admin;
 
 -- 2) A basic retrieval query
 select * from student;
