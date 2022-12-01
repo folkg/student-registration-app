@@ -2,7 +2,6 @@ insert into department (uuid, name) values ('1', 'Computer Science');
 insert into department (uuid, name) values ('2', 'Software Engineering');
 insert into department (uuid, name) values ('3', 'Information Systems');
 
-
 insert into student (uuid, first_name, last_name, email,password) values ('1', 'John', 'Doe', 'John@gmail.com','123');
 insert into student (uuid, first_name, last_name, email,password) values ('2', 'Jane', 'Doe', 'jane@gmail.com','123');
 insert into student (uuid, first_name, last_name, email,password) values ('3', 'John', 'Smith', 'Smith@gmail.com','123');
@@ -26,7 +25,6 @@ insert into prerequisite (uuid, course_uuid, prerequisite_course_uuid) values ('
 insert into prerequisite (uuid, course_uuid, prerequisite_course_uuid) values ('3', '6', '1');
 insert into prerequisite (uuid, course_uuid, prerequisite_course_uuid) values ('4', '7', '1');
 
-
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('1', '1', 1, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('2', '1', 2, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('3', '1', 3, 2020, 'Fall');
@@ -36,8 +34,6 @@ insert into offering (uuid, course_uuid, section_number, year, semester) values 
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('7', '3', 1, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('8', '3', 2, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('9', '3', 3, 2020, 'Fall');
-
-
 
 insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('1', '1', 1, 'A', 'completed');
 insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('1', '2', 1, 'A', 'completed');
@@ -62,8 +58,3 @@ insert into registration (student_uuid, course_uuid, section_number, grade, stat
 insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('3', '5', 1, 'N/A', 'registered');
 insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('3', '6', 1, 'N/A', 'registered');
 insert into registration (student_uuid, course_uuid, section_number, grade, status) values ('3', '7', 1, 'N/A', 'registered');
-
-
-
-
-

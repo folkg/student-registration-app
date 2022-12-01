@@ -20,6 +20,7 @@ create table if not exists student (
     first_name varchar(255) not null,
     last_name varchar(255) not null unique,
     email varchar(255) not null,
+    password varchar(255) not null,
     primary key (uuid)
 );
 
@@ -35,7 +36,7 @@ create table if not exists registration (
     student_uuid varchar(36) not null,
     course_uuid varchar(36) not null,
     section_number int not null,
-    grade varchar(2),
+    grade varchar(255),
     status varchar(255) not null,
     primary key (student_uuid, course_uuid, section_number),
     foreign key (student_uuid) references student (uuid),
