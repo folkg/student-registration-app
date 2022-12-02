@@ -36,6 +36,10 @@ insert into offering (uuid, course_uuid, section_number, year, semester) values 
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('7', '3', 1, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('8', '3', 2, 2020, 'Fall');
 insert into offering (uuid, course_uuid, section_number, year, semester) values ('9', '3', 3, 2020, 'Fall');
+insert into offering (uuid, course_uuid, section_number, year, semester) values ('10', '4', 1, 2020, 'Fall');
+insert into offering (uuid, course_uuid, section_number, year, semester) values ('11', '5', 1, 2020, 'Fall');
+insert into offering (uuid, course_uuid, section_number, year, semester) values ('12', '6', 1, 2020, 'Fall');
+insert into offering (uuid, course_uuid, section_number, year, semester) values ('13', '7', 1, 2020, 'Fall');
 
 
 
