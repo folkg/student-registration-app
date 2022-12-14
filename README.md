@@ -1,5 +1,3 @@
-mvnw clean instal  sprinmvnw clean install  spring-boot:rung-boot:run
-
 # student-registration
 
 A simple app for students to view and register for and view courses available to them. The server was built with Java Spring Boot, the database uses MySQL, and the client was built with React.js.
